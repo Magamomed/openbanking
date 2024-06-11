@@ -1,30 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
-import Home from '../components/Home';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MainScreen from '../components/MainScreen';
 import AccountAnalytics from '../components/AccountAnalytics';
 import AccountStatement from '../components/AccountStatement';
 import AccountBalance from '../components/AccountBalance';
 import TotalBalance from '../components/TotalBalance';
 import SavingsGoal from '../components/SavingsGoal';
-import PersonalizedOffers from '../components/PersonalizedOffers';
 
-const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="HomeScreen" component={Home} />
-    <Stack.Screen name="AccountAnalyticsScreen" component={AccountAnalytics} />
-    <Stack.Screen name="AccountStatementScreen" component={AccountStatement} />
-    <Stack.Screen name="AccountBalanceScreen" component={AccountBalance} />
-    <Stack.Screen name="TotalBalanceScreen" component={TotalBalance} />
-    <Stack.Screen name="SavingsGoalScreen" component={SavingsGoal} />
-    <Stack.Screen name="PersonalizedOffersScreen" component={PersonalizedOffers} />
-  </Stack.Navigator>
-);
 
 const AppNavigator = () => {
   return (
@@ -35,23 +20,23 @@ const AppNavigator = () => {
             let iconName;
 
             switch (route.name) {
-              case 'HomeTab':
-                iconName = 'home';
+              case 'Main':
+                iconName = 'wallet';
                 break;
-              case 'AccountsTab':
+              case 'Accounts':
                 iconName = 'bank';
                 break;
-              case 'StatementsTab':
+              case 'Statements':
                 iconName = 'file-document';
                 break;
-              case 'BalancesTab':
+              case 'Balances':
                 iconName = 'scale-balance';
                 break;
-              case 'GoalsTab':
+              case 'Goals':
                 iconName = 'target';
                 break;
               default:
-                iconName = 'home';
+                iconName = 'wallet';
                 break;
             }
 
@@ -59,11 +44,10 @@ const AppNavigator = () => {
           },
         })}
       >
-        <Tab.Screen name="HomeTab" component={HomeStack} options={{ tabBarLabel: 'Home' }} />
-        <Tab.Screen name="AccountsTab" component={AccountAnalytics} options={{ tabBarLabel: 'Accounts' }} />
-        <Tab.Screen name="StatementsTab" component={AccountStatement} options={{ tabBarLabel: 'Statements' }} />
-        <Tab.Screen name="BalancesTab" component={AccountBalance} options={{ tabBarLabel: 'Balances' }} />
-        <Tab.Screen name="GoalsTab" component={SavingsGoal} options={{ tabBarLabel: 'Goals' }} />
+        <Tab.Screen name="Main" component={MainScreen} options={{ tabBarLabel: 'Main' }} />
+        <Tab.Screen name="Statements" component={AccountStatement} options={{ tabBarLabel: 'Statements' }} />
+        <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Balances' }} />
+        <Tab.Screen name="Goals" component={SavingsGoal} options={{ tabBarLabel: 'Goals' }} />
       </Tab.Navigator>
     </NavigationContainer>
   );
