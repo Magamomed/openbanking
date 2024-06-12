@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AccountAnalytics from '../components/AccountAnalytics';
 
-const MainScreen = () => {
+const MainScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image
           source={{ uri: 'https://via.placeholder.com/150' }} 
@@ -18,40 +18,43 @@ const MainScreen = () => {
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceTitle}>Текущий Счет</Text>
         <Text style={styles.balanceAmount}>₸ 149.868</Text>
-        
       </View>
-      <View style={styles.sortContainer}>
-        <Text style={styles.sortText}>История</Text>
-        <Text style={styles.sortText}>за последние 24-ч</Text>
-      </View>
-      <View style={styles.assetsContainer}>
-        <View style={styles.asset}>
-        <Icon name="currency-kzt" size={24} color="#6a1b9a" />
-          <View style={styles.assetInfo}>
-            <Text style={styles.assetAmount}>25.05.2023</Text>
-            <Text style={styles.assetValue}>₸ 89.759</Text>
-            
+      
+      <TouchableOpacity onPress={() => navigation.navigate('Statements')}>
+        <View style={styles.sortContainer}>
+          <Text style={styles.sortText}>История</Text>
+          <Text style={styles.sortText}>за последние 24-ч</Text>
+        </View>
+        <View style={styles.assetsContainer}>
+          <View style={styles.asset}>
+            <Icon name="currency-kzt" size={24} color="#6a1b9a" />
+            <View style={styles.assetInfo}>
+              <Text style={styles.assetAmount}>25.05.2023</Text>
+              <Text style={styles.assetValue}>₸ 89.759</Text>
+            </View>
+          </View>
+          <View style={styles.asset}>
+            <Icon name="currency-kzt" size={24} color="#d32f2f" />
+            <View style={styles.assetInfo}>
+              <Text style={styles.assetAmount}>15.03.2023</Text>
+              <Text style={styles.assetValue}>₸54.724</Text>
+            </View>
+          </View>
+          <View style={styles.asset}>
+            <Icon name="currency-kzt" size={24} color="#424242" />
+            <View style={styles.assetInfo}>
+              <Text style={styles.assetAmount}>05.01.2023</Text>
+              <Text style={styles.assetValue}>₸ 5.385</Text>
+            </View>
           </View>
         </View>
-        <View style={styles.asset}>
-        <Icon name="currency-kzt" size={24} color="#d32f2f" />
-          <View style={styles.assetInfo}>
-            <Text style={styles.assetAmount}>15.03.2023</Text>
-            <Text style={styles.assetValue}>₸54.724</Text>
-            
-          </View>
-        </View>
-        <View style={styles.asset}>
-        <Icon name="currency-kzt" size={24} color="#424242" />
-          <View style={styles.assetInfo}>
-            <Text style={styles.assetAmount}>05.01.2023</Text>
-            <Text style={styles.assetValue}>₸ 5.385</Text>
-          </View>
-        </View>
-      </View>
-      <AccountAnalytics/>
+      </TouchableOpacity>
 
-    </View>
+      <View style={styles.accountAnalyticsContainer}>
+        <AccountAnalytics />
+      </View>
+
+    </ScrollView>
   );
 };
 
@@ -95,10 +98,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
   },
-  balanceChange: {
-    fontSize: 16,
-    color: 'green',
-  },
   sortContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -112,6 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
+    marginBottom: 20, // Добавляем отступ снизу
   },
   asset: {
     flexDirection: 'row',
@@ -131,6 +131,9 @@ const styles = StyleSheet.create({
   assetChange: {
     fontSize: 14,
     color: 'green',
+  },
+  accountAnalyticsContainer: {
+    marginTop: 20, // Добавляем отступ сверху
   },
   footer: {
     flexDirection: 'row',
