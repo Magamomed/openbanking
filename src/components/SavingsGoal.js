@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, ProgressBarAndroid } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const savingsGoals = [
@@ -23,12 +23,6 @@ const SavingsGoal = () => {
                 ₸{item.saved} / ₸{item.target}
               </Text>
             </View>
-            <ProgressBarAndroid
-              styleAttr="Horizontal"
-              indeterminate={false}
-              progress={item.saved / item.target}
-              color="#00796b"
-            />
             <View style={styles.iconContainer}>
               <Icon name="check-circle" size={24} color={item.saved >= item.target ? 'green' : '#ccc'} />
               <Text style={styles.goalStatus}>{item.saved >= item.target ? 'Completed' : 'In Progress'}</Text>

@@ -6,11 +6,11 @@ const transactions = [
   { id: '1', date: '07 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
   { id: '2', date: '07 JUN', amount: 100, type: 'expense', description: 'Lorem ipsum' },
   { id: '3', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '3', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '3', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '3', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '3', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '3', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
+  { id: '4', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
+  { id: '5', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
+  { id: '6', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
+  { id: '7', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
+  { id: '8', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
 ];
 
 const AccountStatement = () => {
