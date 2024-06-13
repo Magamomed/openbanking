@@ -3,15 +3,18 @@ import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AccountAnalytics from '../components/AccountAnalytics';
+import ProfileSettingsScreen from './ProfileSettingScreen';
 
 const MainScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/150' }} 
-          style={styles.profileImage}
-        />
+      <TouchableOpacity style={styles.profile} onPress={() => navigation.navigate("ProfileSettings")}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>AE</Text>
+          </View>
+
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Mой Кошелек</Text>
         <Icon name="cog" size={24} style={styles.headerIcon} />
       </View>
@@ -74,6 +77,15 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   headerTitle: {
     fontSize: 20,

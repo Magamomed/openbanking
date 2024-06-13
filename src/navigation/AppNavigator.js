@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MainScreen from '../components/MainScreen';
 import AccountAnalytics from '../components/AccountAnalytics';
@@ -8,8 +9,10 @@ import AccountStatement from '../components/AccountStatement';
 import AccountBalance from '../components/AccountBalance';
 import TotalBalance from '../components/TotalBalance';
 import SavingsGoal from '../components/SavingsGoal';
+import ProfileSettingsScreen from '../components/ProfileSettingScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
@@ -44,11 +47,17 @@ const AppNavigator = () => {
           },
         })}
       >
-        <Tab.Screen name="Main" component={MainScreen} options={{ tabBarLabel: 'Main' }} />
-        <Tab.Screen name="Statements" component={AccountStatement} options={{ tabBarLabel: 'Statements' }} />
-        <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Balances' }} />
-        <Tab.Screen name="Goals" component={SavingsGoal} options={{ tabBarLabel: 'Goals' }} />
+        <Tab.Screen name="Main" component={MainScreen} options={{ tabBarLabel: 'Главная' }} />
+        <Tab.Screen name="Statements" component={AccountStatement} options={{ tabBarLabel: 'История' }} />
+        <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Аналитика' }} />
+        <Tab.Screen name="Goals" component={SavingsGoal} options={{ tabBarLabel: 'Цель' }} />
+        <Stack.Screen 
+          name="ProfileSettings" 
+          component={ProfileSettingsScreen} 
+
+        />
       </Tab.Navigator>
+
     </NavigationContainer>
   );
 };
