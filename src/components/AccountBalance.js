@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
+import { List, Divider } from 'react-native-paper';
 
 const BankAnalyticsCategoriesScreen = () => {
   // Пример тестовых данных
@@ -64,17 +65,21 @@ const BankAnalyticsCategoriesScreen = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.bankContainer}>
-            <Text style={styles.bankName}>{item.bank}</Text>
-            <FlatList
-              data={item.categories}
-              keyExtractor={(category, index) => index.toString()}
-              renderItem={({ item: category }) => (
-                <View style={styles.categoryContainer}>
+            <List.Accordion
+              title={item.bank}
+              titleStyle={styles.bankName}
+              style={styles.bankAccordion}
+              id={`accordion-${item.bank}`}
+              left={(props) => <List.Icon {...props} icon="bank" />}
+            >
+              {item.categories.map((category, index) => (
+                <View key={index} style={styles.categoryContainer}>
                   <Text style={styles.categoryName}>{category.category}</Text>
                   <Text style={styles.amount}>${category.amount}</Text>
                 </View>
-              )}
-            />
+              ))}
+            </List.Accordion>
+            <Divider />
           </View>
         )}
       />
@@ -111,19 +116,22 @@ const styles = StyleSheet.create({
   },
   bankContainer: {
     marginBottom: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  },
+  bankAccordion: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
   },
   bankName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginLeft: 10,
   },
   categoryContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   categoryName: {
     fontSize: 16,
