@@ -1,0 +1,65 @@
+{
+    "data": {
+      "currentBalance": 20314,
+      "availableBalance": 18084,
+      "blockedBalance": 2230,
+      "currency": "KZT",
+      "creditLine": [
+        {
+          "included": false,
+          "type": "PRE_AGREED",
+          "amount": {
+            "amount": 23866,
+            "currency": "KZT"
+          }
+        },
+        {
+          "included": true,
+          "type": "AVAILABLE",
+          "amount": {
+            "amount": 81874,
+            "currency": "KZT"
+          }
+        },
+        {
+          "included": true,
+          "type": "AVAILABLE",
+          "amount": {
+            "amount": 97398,
+            "currency": "EUR"
+          }
+        },
+        {
+          "included": false,
+          "type": "AVAILABLE",
+          "amount": {
+            "amount": 30577,
+            "currency": "KZT"
+          }
+        },
+        {
+          "included": false,
+          "type": "AVAILABLE",
+          "amount": {
+            "amount": 79499,
+            "currency": "EUR"
+          }
+        }
+      ],
+      "purses": [
+        {
+          "amount": 87755,
+          "currency": "KZT"
+        },
+        {
+          "amount": 37069,
+          "currency": "USD"
+        },
+        {
+          "amount": 62676,
+          "currency": "KZT"
+        }
+      ]
+    }
+  }
+  

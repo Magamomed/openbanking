@@ -1,0 +1,118 @@
+{
+    "data": {
+      "transactions": [
+        {
+          "transactionId": "7351e690-acbc-403c-9e9a-8edb5c48fc3b",
+          "documentNumber": "c868ec76-c25c-482a-9602-e9b4b045eeea",
+          "reference": "66cf5037-70c3-46b2-962c-15b19e7da192",
+          "status": "PENDING",
+          "amount": {
+            "amount": 8237,
+            "currency": "USD"
+          },
+          "chargeAmount": {
+            "amount": 71507,
+            "currency": "USD"
+          },
+          "creditDebitIndicator": "DEBIT",
+          "type": "OTHER",
+          "purposeCode": "QKB",
+          "budgetCode": "GSG",
+          "senderCode": "EUN",
+          "beneficiaryCode": "YCJ",
+          "mcc": "ABI",
+          "description": "TmQk zr2j0rK lQRQqc7f0IA2TmUIMifebHZgvzVf",
+          "createDateTime": "2024-04-29T12:30:24.356Z",
+          "bookingDateTime": "2022-05-20T19:47:02.944Z",
+          "valueDateTime": "2023-01-20T05:01:39.594Z",
+          "creditorName": "Ie0aQsyLt1JLN mfqwghQIeE3VOJyZoj8XcEyONtP",
+          "debtorName": "2pAYrX1OQUb6Sr1X03VLhoa8VptyBm3zyPx0A78J0",
+          "creditorAgent": {
+            "bic": "BDQ",
+            "bin": "YWW",
+            "name": "EQP"
+          },
+          "debtorAgent": {
+            "bic": "XAI",
+            "bin": "LWE",
+            "name": "UZU"
+          }
+        },
+        {
+          "transactionId": "f7e2fec8-d752-416d-a941-3738054204a1",
+          "documentNumber": "5d7a09b6-393e-48de-914b-09aa7e6b57de",
+          "reference": "b878a34c-e98b-4148-bb0b-80633aca0140",
+          "status": "BOOKED",
+          "amount": {
+            "amount": 8317,
+            "currency": "USD"
+          },
+          "chargeAmount": {
+            "amount": 62584,
+            "currency": "EUR"
+          },
+          "creditDebitIndicator": "DEBIT",
+          "type": "TRANSFER",
+          "purposeCode": "NRY",
+          "budgetCode": "MBO",
+          "senderCode": "MZX",
+          "beneficiaryCode": "SGL",
+          "mcc": "AVG",
+          "description": "rj1JUidzsqcduxH754JyGbSQRIU8WygiOCaBOCE a",
+          "createDateTime": "2019-06-11T11:36:12.355Z",
+          "bookingDateTime": "2019-06-11T11:36:12.356Z",
+          "valueDateTime": "2019-06-11T11:36:12.356Z",
+          "creditorName": "xBliaIeHTwmYL2XDaWOwqQLKKSUaaV8G YctvTUCn",
+          "debtorName": "ysuMiu9lkKaY57ROgO4qapazjUz1jmSuOXDy3oZ3E",
+          "creditorAgent": {
+            "bic": "XNT",
+            "bin": "XOF",
+            "name": "OYE"
+          },
+          "debtorAgent": {
+            "bic": "GBJ",
+            "bin": "GHL",
+            "name": "RBC"
+          }
+        },
+        {
+          "transactionId": "5a733e70-5d2e-4cf8-a48c-86650a5a7a42",
+          "documentNumber": "cafdd450-c777-43f3-a906-39880e373ac1",
+          "reference": "b995b7d2-1bee-4ece-b3d8-032bf3d60edd",
+          "status": "PENDING",
+          "amount": {
+            "amount": 84206,
+            "currency": "USD"
+          },
+          "chargeAmount": {
+            "amount": 95472,
+            "currency": "KZT"
+          },
+          "creditDebitIndicator": "CREDIT",
+          "type": "E_COMMERCE",
+          "purposeCode": "HAE",
+          "budgetCode": "ENA",
+          "senderCode": "NFZ",
+          "beneficiaryCode": "TYO",
+          "mcc": "FVE",
+          "description": "1ZASe3Ny4MaJgpmjVFfB9k4EVYGyy5KyELbkJtr4Y",
+          "createDateTime": "2019-06-11T11:36:12.356Z",
+          "bookingDateTime": "2019-06-11T11:36:12.356Z",
+          "valueDateTime": "2019-06-11T11:36:12.356Z",
+          "creditorName": "rMLMh6JDstWVw12Re6ZJB2G1rWIPrUd5mj9JeTPig",
+          "debtorName": "aSWKVGffBcno8XSyx0OZQH2qtZw NemgiYL8w56Np",
+          "creditorAgent": {
+            "bic": "ZYY",
+            "bin": "BFQ",
+            "name": "HBB"
+          },
+          "debtorAgent": {
+            "bic": "XQF",
+            "bin": "QBR",
+            "name": "VJT"
+          }
+        }
+      ]
+    }
+  }
+  

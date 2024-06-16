@@ -1,0 +1,41 @@
+{
+    "accounts": [
+      {
+        "accountId": "3ea154d5-3b5c-48ef-80c8-e8d7b8fa44b3",
+        "currentBalance": 20314,
+        "currency": "KZT",
+        "openedDateTime": "2019-11-11T11:16:33.692Z",
+        "description": "GPfUAl5gFL9hcxVMwRhettiZ7DMk7Aca aMC2gH2S"
+      },
+      {
+        "accountId": "262a4370-e572-4603-afce-42af8f32081c",
+        "currentBalance": 20444,
+        "currency": "KZT",
+        "openedDateTime": "2021-11-30T16:23:43.599Z",
+        "description": "5O yetcO 5t 78iYYzBg31blusBsTt2ZOVDKQ ylm"
+      }
+    ],
+    "transactions": [
+      {
+        "transactionId": "7351e690-acbc-403c-9e9a-8edb5c48fc3b",
+        "documentNumber": "c86e8e7c-c25c-482a-962e-e9b4b045eeea",
+        "reference": "6ccf5097-70c3-46b2-962c-15b19e7d1922",
+        "status": "PENDING",
+        "amount": {
+          "amount": 8237,
+          "currency": "USD"
+        },
+        "chargeAmount": {
+          "amount": 71507,
+          "currency": "USD"
+        },
+        "creditDebitIndicator": "DEBIT",
+        "type": "OTHER",
+        "purposeCode": "KQB",
+        "budgetCode": "GSG",
+        "senderCode": "EUN",
+        "beneficiaryCode": "YCJ"
+      }
+    ]
+  }
+  
