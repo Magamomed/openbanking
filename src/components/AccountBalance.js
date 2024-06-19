@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, SectionList, TouchableOpacity, ScrollView  } from 'react-native';
-import { PieChart, BarChart } from 'react-native-chart-kit';
-import { List, Divider } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { BarChart } from 'react-native-chart-kit';
+import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+
+const screenWidth = Dimensions.get('window').width;
 
 const BankAnalyticsCategoriesScreen = () => {
-  // Пример тестовых данных
   const testData = [
     {
       bank: 'Банк Центр Кредит',
@@ -12,6 +14,11 @@ const BankAnalyticsCategoriesScreen = () => {
         { category: 'Еда', amount: 5000 },
         { category: 'Транспорт', amount: 1000 },
         { category: 'Развлечения', amount: 2000 },
+      ],
+      transactions: [
+        { id: 1, name: 'Кафе', date: '17 июня', amount: -500 },
+        { id: 2, name: 'Метро', date: '17 июня', amount: -200 },
+        { id: 3, name: 'Ресторан', date: '16 июня', amount: -1000 },
       ],
     },
     {
@@ -21,6 +28,10 @@ const BankAnalyticsCategoriesScreen = () => {
         { category: 'Транспорт', amount: 2500 },
         { category: 'Развлечения', amount: 1500 },
       ],
+      transactions: [
+        { id: 1, name: 'Магазин', date: '17 июня', amount: -1500 },
+        { id: 2, name: 'Такси', date: '17 июня', amount: -300 },
+      ],
     },
     {
       bank: 'AO "Bank RBK"',
@@ -28,6 +39,10 @@ const BankAnalyticsCategoriesScreen = () => {
         { category: 'Еда', amount: 4500 },
         { category: 'Транспорт', amount: 2000 },
         { category: 'Развлечения', amount: 1800 },
+      ],
+      transactions: [
+        { id: 1, name: 'Супермаркет', date: '17 июня', amount: -2000 },
+        { id: 2, name: 'Кино', date: '16 июня', amount: -700 },
       ],
     },
     {
@@ -37,198 +52,181 @@ const BankAnalyticsCategoriesScreen = () => {
         { category: 'Транспорт', amount: 2800 },
         { category: 'Развлечения', amount: 1200 },
       ],
+      transactions: [
+        { id: 1, name: 'Обед', date: '17 июня', amount: -300 },
+        { id: 2, name: 'Автобус', date: '16 июня', amount: -100 },
+      ],
     },
-
   ];
 
-  const [selectedBank, setSelectedBank] = useState(testData[0].bank);
- // Формирование данных для столбчатой диаграммы
- const barData = {
-  labels: testData.map((item) => item.bank),
-  datasets: [
-    {
-      data: testData.map((item) =>
-        item.categories.reduce((acc, category) => acc + category.amount, 0)
-      ),
-      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`, // Цвет столбцов
-    },
-  ],
-};
+  const [selectedBank, setSelectedBank] = useState(testData[0]);
 
-const selectedBankData = testData.find(bank => bank.bank === selectedBank).categories.map((category, index) => ({
-  name: category.category,
-  amount: category.amount,
-  color: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`,
-  legendFontColor: '#7F7F7F',
-  legendFontSize: 15,
-}));
+  const renderBankAnalytics = (bankData) => {
+    const barData = {
+      labels: bankData.categories.map((item) => item.category),
+      datasets: [
+        {
+          data: bankData.categories.map((item) => item.amount),
+          color: (opacity = 1) => `rgba(34, 150, 243, ${opacity})`,
+        },
+      ],
+    };
 
-const sections = [
-  { title: 'Банки', data: testData, renderItem: renderBankItem },
-  { title: 'Диаграммы', data: [{}], renderItem: renderCharts },
-];
-
-function renderBankItem({ item }) {
-  return (
-    <View style={styles.bankContainer}>
-      <List.Accordion
-        title={item.bank}
-        titleStyle={styles.bankName}
-        style={styles.bankAccordion}
-        id={`accordion-${item.bank}`}
-        left={(props) => <List.Icon {...props} icon="bank" />}
-      >
-        {item.categories.map((category, index) => (
-          <View key={index} style={styles.categoryContainer}>
-            <Text style={styles.categoryName}>{category.category}</Text>
-            <Text style={styles.amount}>₸{category.amount}</Text>
-          </View>
-        ))}
-      </List.Accordion>
-      <Divider />
-    </View>
-  );
-}
-
-function renderCharts() {
-  return (
-    <View>
+    return (
+      <View style={styles.analyticsContainer}>
+        <Text style={styles.chartTitle}>Аналитика расходов</Text>
+        <Text style={styles.chartSubtitle}>{bankData.bank}</Text>
         <BarChart
-          style={{ marginTop: 20 }}
           data={barData}
-          width={350}
-          height={300}
-          yAxisLabel="₸"
-          fromZero
+          width={screenWidth - 40}
+          height={220}
           chartConfig={{
-            backgroundGradientFrom: '#1E2923',
-            backgroundGradientTo: '#08130D',
-            decimalPlaces: 0, // Для отображения целых чисел
-            color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-      
-                }}
-          
-          verticalLabelRotation={20}
-          showValuesOnTopOfBars={true}
+            backgroundGradientFrom: '#ffffff',
+            backgroundGradientTo: '#ffffff',
+            decimalPlaces: 0,
+            color: (opacity = 1) => `rgba(34, 150, 243, ${opacity})`,
+            labelColor: () => '#333',
+            style: {
+              borderRadius: 16,
+            },
+          }}
+          style={styles.chart}
         />
-        <ScrollView horizontal style={styles.buttonsContainer}>
-          {testData.map((bank, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.button,
-                selectedBank === bank.bank && styles.selectedButton,
-              ]}
-              onPress={() => setSelectedBank(bank.bank)}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  selectedBank === bank.bank && styles.selectedButtonText,
-                ]}
-              >
-                {bank.bank}
-              </Text>
-            </TouchableOpacity>
+        <Text style={styles.historyTitle}>История транзакций</Text>
+        <ScrollView style={styles.historyList}>
+          {bankData.transactions.map((transaction) => (
+            <View key={transaction.id} style={styles.historyItem}>
+              <View style={styles.details}>
+                <Text style={styles.transactionName}>{transaction.name}</Text>
+                <Text style={styles.date}>{transaction.date}</Text>
+              </View>
+              <Text style={styles.amount}>{transaction.amount < 0 ? '-' : ''}₸{Math.abs(transaction.amount)}</Text>
+            </View>
           ))}
         </ScrollView>
-          <PieChart
-            data={selectedBankData}
-            width={350}
-            height={200}
-            chartConfig={{
-            backgroundGradientFrom: '#1E2923',
-            backgroundGradientTo: '#08130D',
-              color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-            }}
-            accessor="amount"
-            backgroundColor="transparent"
-            paddingLeft="15"
-            absolute
-          />
       </View>
-  );
-}
+    );
+  };
 
-return (
-  <View style={styles.container}>
-  <Text style={styles.title}>Аналитика расходов по категориям</Text>
-  <SectionList
-    sections={sections}
-    keyExtractor={(item, index) => index.toString()}
-    renderItem={({ item, section }) => section.renderItem({ item })}
-    renderSectionHeader={({ section: { title } }) => (
-      <Text style={styles.sectionHeader}>{title}</Text>
-    )}
-  />
-</View>
-);
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity>
+          <FontAwesome name="arrow-left" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Аналитика</Text>
+        <MaterialIcons name="account-balance" size={40} color="black" />
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bankList}>
+        {testData.map((bank, index) => (
+          <TouchableOpacity key={index} onPress={() => setSelectedBank(bank)} style={[styles.bankItem, selectedBank.bank === bank.bank && styles.selectedBankItem]}>
+            <Text style={[styles.bankName, selectedBank.bank === bank.bank && styles.selectedBankName]}>{bank.bank}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      {renderBankAnalytics(selectedBank)}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f7f7f7',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingTop: 20,
-    backgroundColor: '#fff',
+    paddingBottom: 10,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    color: '#333',
   },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    marginBottom: 5,
+  bankList: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
-  bankContainer: {
-    marginBottom: 20,
+  bankItem: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginHorizontal: 5,
+    backgroundColor: '#e7e7e7',
   },
-  bankAccordion: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+  selectedBankItem: {
+    backgroundColor: '#2296F3',
   },
   bankName: {
+    color: '#333',
+  },
+  selectedBankName: {
+    color: '#fff',
+  },
+  analyticsContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    margin: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  chartTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10,
+    marginBottom: 4,
+    textAlign: 'center',
   },
-  categoryContainer: {
+  chartSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  chart: {
+    borderRadius: 16,
+  },
+  historyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    textAlign: 'center',
+  },
+  historyList: {
+    marginTop: 10,
+  },
+  historyItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    borderBottomColor: '#e7e7e7',
+    borderBottomWidth: 1,
   },
-  categoryName: {
+  details: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  transactionName: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  date: {
+    fontSize: 14,
+    color: '#666',
   },
   amount: {
     fontSize: 16,
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    marginVertical: 20,
-  },
-  button: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    marginHorizontal: 5,
-    borderRadius: 5,
-  },
-  selectedButton: {
-    backgroundColor: '#1E2923',
-  },
-  buttonText: {
-    color: '#000',
-  },
-  selectedButtonText: {
-    color: '#fff',
+    fontWeight: 'bold',
   },
 });
+
 export default BankAnalyticsCategoriesScreen;
