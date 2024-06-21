@@ -1,40 +1,67 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, SectionList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-const transactions = [
-  { id: '1', date: '07 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '2', date: '07 JUN', amount: 100, type: 'expense', description: 'Lorem ipsum' },
-  { id: '3', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '4', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '5', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '6', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '7', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-  { id: '8', date: '08 JUN', amount: 200, type: 'income', description: 'Lorem ipsum' },
-];
+import transactionsData from '../data/transactions.json';
 
 const AccountStatement = () => {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    setTransactions(transactionsData.data.transactions);
+  }, []);
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: 'short' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', options).toUpperCase();
+  };
+
+  const getTransactionType = (indicator) => {
+    return indicator === 'CREDIT' ? 'income' : 'expense';
+  };
+
+  const renderTransaction = ({ item }) => (
+    <View style={styles.transactionItem}>
+      <View style={styles.transactionIcon}>
+        <Icon
+          name={getTransactionType(item.creditDebitIndicator) === 'income' ? 'arrow-down' : 'arrow-up'}
+          size={24}
+          color={getTransactionType(item.creditDebitIndicator) === 'income' ? 'green' : 'red'}
+        />
+        <Text style={styles.transactionDate}>{formatDate(item.bookingDateTime)}</Text>
+      </View>
+      <View style={styles.transactionDetails}>
+        <Text style={styles.transactionDescription}>{item.debtorAgent.name}</Text>
+        <Text style={styles.transactionAmount}>₸{item.amount.amount}</Text>
+      </View>
+    </View>
+  );
+
+  const groupTransactionsByDate = (transactions) => {
+    return transactions.reduce((acc, transaction) => {
+      const date = formatDate(transaction.bookingDateTime);
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(transaction);
+      return acc;
+    }, {});
+  };
+
+  const sections = Object.entries(groupTransactionsByDate(transactions)).map(([date, data]) => ({
+    title: date,
+    data,
+  }));
+
   return (
     <View style={styles.container}>
       <Text style={styles.transactionsTitle}>История</Text>
-      <FlatList
-        data={transactions}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.transactionItem}>
-            <View style={styles.transactionIcon}>
-              <Icon
-                name={item.type === 'income' ? 'arrow-down' : 'arrow-up'}
-                size={24}
-                color={item.type === 'income' ? 'green' : 'red'}
-              />
-              <Text style={styles.transactionDate}>{item.date}</Text>
-            </View>
-            <View style={styles.transactionDetails}>
-              <Text style={styles.transactionDescription}>{item.description}</Text>
-              <Text style={styles.transactionAmount}>₸{item.amount}</Text>
-            </View>
-          </View>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.transactionId}
+        renderItem={renderTransaction}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.sectionHeader}>{title}</Text>
         )}
       />
     </View>
@@ -47,39 +74,17 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f9f9f9',
   },
-  balanceContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-  balanceTitle: {
-    fontSize: 16,
-    color: '#00796b',
-  },
-  balanceAmount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
-  incomeExpense: {
-    fontSize: 14,
-  },
-  income: {
-    color: 'green',
-  },
-  expense: {
-    color: 'red',
-  },
   transactionsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  sectionHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   transactionItem: {
     flexDirection: 'row',

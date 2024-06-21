@@ -1,62 +1,80 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AccountAnalytics from '../components/AccountAnalytics';
-import ProfileSettingsScreen from './ProfileSettingScreen';
+import balanceData from '../data/balances.json';
 
 const MainScreen = ({ navigation }) => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Устанавливаем данные напрямую из импортированного файла
+    setData(balanceData.data);
+  }, []);
+
+  if (!data) {
+    return <Text>Loading...</Text>; // Показываем индикатор загрузки
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity style={styles.profile} onPress={() => navigation.navigate("ProfileSettings")}>
+        <TouchableOpacity style={styles.profile} onPress={() => navigation.navigate("ProfileSettings")}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>AE</Text>
           </View>
-
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mой Кошелек</Text>
+        <Text style={styles.headerTitle}>Мой Кошелек</Text>
         <Icon name="cog" size={24} style={styles.headerIcon} />
       </View>
+
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceTitle}>Текущий Счет</Text>
-        <Text style={styles.balanceAmount}>₸ 149.868</Text>
+        <Text style={styles.balanceAmount}>₸ {data.currentBalance}</Text>
+        <Text style={styles.balanceSubAmount}>Доступный баланс: ₸ {data.availableBalance}</Text>
+        <Text style={styles.balanceSubAmount}>Заблокированный баланс: ₸ {data.blockedBalance}</Text>
       </View>
-      
+
       <TouchableOpacity onPress={() => navigation.navigate('Statements')}>
         <View style={styles.sortContainer}>
           <Text style={styles.sortText}>История</Text>
           <Text style={styles.sortText}>за последние 24-ч</Text>
         </View>
-        <View style={styles.assetsContainer}>
-          <View style={styles.asset}>
-            <Icon name="currency-kzt" size={24} color="#6a1b9a" />
-            <View style={styles.assetInfo}>
-              <Text style={styles.assetAmount}>25.05.2023</Text>
-              <Text style={styles.assetValue}>₸ 89.759</Text>
-            </View>
-          </View>
-          <View style={styles.asset}>
-            <Icon name="currency-kzt" size={24} color="#d32f2f" />
-            <View style={styles.assetInfo}>
-              <Text style={styles.assetAmount}>15.03.2023</Text>
-              <Text style={styles.assetValue}>₸54.724</Text>
-            </View>
-          </View>
-          <View style={styles.asset}>
-            <Icon name="currency-kzt" size={24} color="#424242" />
-            <View style={styles.assetInfo}>
-              <Text style={styles.assetAmount}>05.01.2023</Text>
-              <Text style={styles.assetValue}>₸ 5.385</Text>
-            </View>
-          </View>
-        </View>
       </TouchableOpacity>
+
+      {data.creditLine && (
+        <View style={styles.creditLineContainer}>
+          <Text style={styles.sectionTitle}>Кредитные линии</Text>
+          {data.creditLine.map((line, index) => (
+            <View key={index} style={styles.creditLineItem}>
+              <Text style={styles.creditLineType}>{line.type}</Text>
+              <Text style={styles.creditLineAmount}>
+                {line.amount.currency} {line.amount.amount}
+              </Text>
+              <Text style={styles.creditLineIncluded}>
+                Включено: {line.included ? "Да" : "Нет"}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {data.purses && (
+        <View style={styles.pursesContainer}>
+          <Text style={styles.sectionTitle}>Кошельки</Text>
+          {data.purses.map((purse, index) => (
+            <View key={index} style={styles.purseItem}>
+              <Text style={styles.purseCurrency}>{purse.currency}</Text>
+              <Text style={styles.purseAmount}>{purse.amount}</Text>
+            </View>
+          ))}
+        </View>
+      )}
 
       <View style={styles.accountAnalyticsContainer}>
         <AccountAnalytics />
       </View>
-
     </ScrollView>
   );
 };
@@ -64,8 +82,8 @@ const MainScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
-    paddingHorizontal: 20,
+    backgroundColor: '#f0f2f5',
+    paddingHorizontal: 15,
   },
   header: {
     flexDirection: 'row',
@@ -79,73 +97,118 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+  },
+  avatarText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#555',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
+    color: '#333',
   },
   headerIcon: {
-    color: '#000',
+    color: '#555',
   },
-  balanceContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
+balanceContainer: {
+    backgroundColor: '#1a237e', // Черно-синий фон, как у пластиковой карты
+    borderRadius: 15, // Увеличиваем радиус скругления для более плавного вида
     padding: 20,
-    marginVertical: 20,
-    alignItems: 'center',
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, // Увеличиваем смещение тени для глубокого эффекта
+    shadowOpacity: 0.3, // Увеличиваем прозрачность тени
+    shadowRadius: 5,
+    elevation: 5, // Android тень
   },
   balanceTitle: {
-    fontSize: 16,
-    color: '#999',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff', // Белый текст на темном фоне
+    marginBottom: 10,
+    textAlign: 'center', // Центрируем текст
   },
   balanceAmount: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    marginVertical: 10,
+    color: '#ffeb3b', // Желтый цвет для выделения
+    textAlign: 'center',
   },
+  balanceSubAmount: {
+    fontSize: 16,
+    color: '#bdbdbd', // Серый цвет для вспомогательной информации
+    textAlign: 'center',
+    marginTop: 5,
+  },
+
   sortContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 10,
+    padding: 10,
   },
   sortText: {
     fontSize: 16,
-    color: '#999',
+    color: '#666',
   },
-  assetsContainer: {
+  creditLineContainer: {
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
-    marginBottom: 20, // Добавляем отступ снизу
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
-  asset: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
+  creditLineItem: {
+    marginBottom: 15,
   },
-  assetInfo: {
-    marginLeft: 10,
-  },
-  assetAmount: {
-    fontSize: 16,
-  },
-  assetValue: {
+  creditLineType: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#333',
   },
-  assetChange: {
+  creditLineAmount: {
+    fontSize: 16,
+    color: '#666',
+  },
+  creditLineIncluded: {
     fontSize: 14,
-    color: 'green',
+    color: '#888',
+  },
+  pursesContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  purseItem: {
+    marginBottom: 15,
+  },
+  purseCurrency: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  purseAmount: {
+    fontSize: 16,
+    color: '#666',
   },
   accountAnalyticsContainer: {
-    marginTop: 20, // Добавляем отступ сверху
+    marginTop: 20,
   },
   footer: {
     flexDirection: 'row',
