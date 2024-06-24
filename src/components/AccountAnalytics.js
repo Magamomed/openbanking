@@ -20,7 +20,7 @@ const AccountAnalytics = () => {
             <Text>{account.balance}</Text>
           </View>
         ))}
-        <Text style={styles.addNewAccount}>Добавить счета других банков</Text>
+        {/* <Text style={styles.addNewAccount}>Добавить счета других банков</Text> */}
       </View>
 
   );

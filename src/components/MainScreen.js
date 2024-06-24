@@ -1,21 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import AccountAnalytics from '../components/AccountAnalytics';
 import balanceData from '../data/balances.json';
 
 const MainScreen = ({ navigation }) => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(balanceData.data);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    // Устанавливаем данные напрямую из импортированного файла
-    setData(balanceData.data);
-  }, []);
+  const validateCardNumber = (number) => {
+    return /^[0-9]{16}$/.test(number);
+  };
 
-  if (!data) {
-    return <Text>Loading...</Text>; // Показываем индикатор загрузки
-  }
+  const validateExpiryDate = (date) => {
+    return /^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(date);
+  };
+
+  const validateCvv = (code) => {
+    return /^[0-9]{3}$/.test(code);
+  };
+
+  const handleAddCard = () => {
+    const newErrors = {};
+    if (!validateCardNumber(cardNumber)) {
+      newErrors.cardNumber = 'Неверный номер карты';
+    }
+    if (!validateExpiryDate(expiryDate)) {
+      newErrors.expiryDate = 'Неверный срок действия';
+    }
+    if (!validateCvv(cvv)) {
+      newErrors.cvv = 'Неверный CVV';
+    }
+
+    if (Object.keys(newErrors).length === 0) {
+      setModalVisible(false);
+      setCardNumber('');
+      setExpiryDate('');
+      setCvv('');
+      setErrors({});
+    } else {
+      setErrors(newErrors);
+    }
+  };
+
+  const handleCardNumberChange = (text) => {
+    setCardNumber(text.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim());
+  };
+
+  const handleExpiryDateChange = (text) => {
+    if (text.length === 2 && !text.includes('/')) {
+      setExpiryDate(`${text}/`);
+    } else {
+      setExpiryDate(text);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -75,6 +117,58 @@ const MainScreen = ({ navigation }) => {
       <View style={styles.accountAnalyticsContainer}>
         <AccountAnalytics />
       </View>
+
+      <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.addButtonText}>Добавить счета других банков</Text>
+      </TouchableOpacity>
+
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Привязать новую карту</Text>
+            <TextInput
+              style={[styles.input, errors.cardNumber && styles.inputError]}
+              placeholder="Номер карты"
+              placeholderTextColor="#888"
+              value={cardNumber}
+              onChangeText={handleCardNumberChange}
+              keyboardType="numeric"
+              maxLength={19}
+            />
+            {errors.cardNumber && <Text style={styles.errorText}>{errors.cardNumber}</Text>}
+            <View style={styles.inputRow}>
+              <TextInput
+                style={[styles.input, styles.inputHalf, errors.expiryDate && styles.inputError]}
+                placeholder="Срок действия"
+                placeholderTextColor="#888"
+                value={expiryDate}
+                onChangeText={handleExpiryDateChange}
+                keyboardType="numeric"
+                maxLength={5}
+              />
+              <TextInput
+                style={[styles.input, styles.inputHalf, errors.cvv && styles.inputError]}
+                placeholder="CVV / CVC"
+                placeholderTextColor="#888"
+                value={cvv}
+                onChangeText={setCvv}
+                secureTextEntry
+                keyboardType="numeric"
+                maxLength={3}
+              />
+            </View>
+            {errors.expiryDate && <Text style={styles.errorText}>{errors.expiryDate}</Text>}
+            {errors.cvv && <Text style={styles.errorText}>{errors.cvv}</Text>}
+            <Text style={styles.inputHint}>3 цифры на обороте</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={handleAddCard}>
+              <Text style={styles.modalButtonText}>Привязать карту</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -117,7 +211,7 @@ const styles = StyleSheet.create({
   headerIcon: {
     color: '#555',
   },
-balanceContainer: {
+  balanceContainer: {
     backgroundColor: '#1a237e', // Черно-синий фон, как у пластиковой карты
     borderRadius: 15, // Увеличиваем радиус скругления для более плавного вида
     padding: 20,
@@ -147,7 +241,6 @@ balanceContainer: {
     textAlign: 'center',
     marginTop: 5,
   },
-
   sortContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -209,6 +302,91 @@ balanceContainer: {
   },
   accountAnalyticsContainer: {
     marginTop: 20,
+  },
+  addButton: {
+    backgroundColor: '#1a73e8',
+    borderRadius: 10,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  addButtonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    color: '#888',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    backgroundColor: '#f9f9f9',
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  inputHalf: {
+    width: '48%',
+  },
+  inputHint: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  modalButton: {
+    backgroundColor: '#1a73e8',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 10,
   },
   footer: {
     flexDirection: 'row',
