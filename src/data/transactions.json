@@ -1,118 +1,232 @@
 {
-    "data": {
+  "data": {
       "transactions": [
-        {
-          "transactionId": "7351e690-acbc-403c-9e9a-8edb5c48fc3b",
-          "documentNumber": "c868ec76-c25c-482a-9602-e9b4b045eeea",
-          "reference": "66cf5037-70c3-46b2-962c-15b19e7da192",
-          "status": "PENDING",
-          "amount": {
-            "amount": 8237,
-            "currency": "USD"
+          {
+              "transactionId": "6d4c3d43-7c21-4d62-92ee-dab62391a1c0",
+              "documentNumber": "5e1093af-faac-4ac8-b60b-b67ecd7b4a57",
+              "reference": "97b1555e-3ade-425a-ba1a-6cdee67e979a",
+              "status": "PENDING",
+              "amount": {
+                  "amount": 37825,
+                  "currency": "USD"
+              },
+              "chargeAmount": {
+                  "amount": 56693,
+                  "currency": "USD"
+              },
+              "creditDebitIndicator": "CREDIT",
+              "type": "PAYMENT",
+              "purposeCode": "EDS",
+              "budgetCode": "WOL",
+              "senderCode": "VTV",
+              "beneficiaryCode": "QHL",
+              "mcc": "CBC",
+              "description": "zPGOIU1bwm74tJey0N2KPEekkWyI3WYVsUsWND kL",
+              "createDateTime": "2019-06-20T15:40:36.47Z",
+              "bookingDateTime": "2019-06-20T15:40:36.47Z",
+              "valueDateTime": "2020-09-26T14:16:44.411Z",
+              "creditorName": "qjcGztkZhEzoufRJmHIRXBGUnBF5Sx5WqCXRwEpSi",
+              "debtorName": "WDeNZ0fFFS0TYb8ANohti4vjikqF51gqm4PA pKTb",
+              "creditorAgent": {
+                  "bic": "CMN",
+                  "bin": "HPH",
+                  "name": "GMF"
+              },
+              "debtorAgent": {
+                  "bic": "HHY",
+                  "bin": "AIJ",
+                  "name": "STV"
+              }
           },
-          "chargeAmount": {
-            "amount": 71507,
-            "currency": "USD"
+          {
+              "transactionId": "f47ec710-de03-4e98-90a6-69487ebfe64c",
+              "documentNumber": "d0178032-c9ab-4ba5-a2c1-fb183fcbd86b",
+              "reference": "62c108e1-4eb8-42a9-ab38-4748c88caf51",
+              "status": "BOOKED",
+              "amount": {
+                  "amount": 25062,
+                  "currency": "USD"
+              },
+              "chargeAmount": {
+                  "amount": 26939,
+                  "currency": "USD"
+              },
+              "creditDebitIndicator": "CREDIT",
+              "type": "INCOME",
+              "purposeCode": "DOL",
+              "budgetCode": "RDC",
+              "senderCode": "FET",
+              "beneficiaryCode": "CMI",
+              "mcc": "RUM",
+              "description": "2PSbraOZmxAzeLs0Yr8Vlc3VTS4E37OGqeyCdzMH0",
+              "createDateTime": "2021-12-11T22:30:14.141Z",
+              "bookingDateTime": "2019-12-12T14:47:11.968Z",
+              "valueDateTime": "2019-06-20T15:40:36.47Z",
+              "creditorName": "PqDIXPDUXVlJhczxo84HtYmtjw3wPUD6oJjKG Dd9",
+              "debtorName": "1xXCdclH6sWPek4XXh 4MRzqZacKWCrABwMVCwU83",
+              "creditorAgent": {
+                  "bic": "SFG",
+                  "bin": "GNZ",
+                  "name": "DMI"
+              },
+              "debtorAgent": {
+                  "bic": "LIN",
+                  "bin": "DQN",
+                  "name": "GLH"
+              }
           },
-          "creditDebitIndicator": "DEBIT",
-          "type": "OTHER",
-          "purposeCode": "QKB",
-          "budgetCode": "GSG",
-          "senderCode": "EUN",
-          "beneficiaryCode": "YCJ",
-          "mcc": "ABI",
-          "description": "TmQk zr2j0rK lQRQqc7f0IA2TmUIMifebHZgvzVf",
-          "createDateTime": "2024-04-29T12:30:24.356Z",
-          "bookingDateTime": "2022-05-20T19:47:02.944Z",
-          "valueDateTime": "2023-01-20T05:01:39.594Z",
-          "creditorName": "Ie0aQsyLt1JLN mfqwghQIeE3VOJyZoj8XcEyONtP",
-          "debtorName": "2pAYrX1OQUb6Sr1X03VLhoa8VptyBm3zyPx0A78J0",
-          "creditorAgent": {
-            "bic": "BDQ",
-            "bin": "YWW",
-            "name": "EQP"
+          {
+              "transactionId": "ac8e6c2d-7011-4e22-b376-4ee0889749c7",
+              "documentNumber": "2379bf5b-b3b3-42d9-a825-3124ce5f77d1",
+              "reference": "2d944f1e-6de2-480f-911b-a73c85f8bcb6",
+              "status": "BOOKED",
+              "amount": {
+                  "amount": 92050,
+                  "currency": "EUR"
+              },
+              "chargeAmount": {
+                  "amount": 36493,
+                  "currency": "KZT"
+              },
+              "creditDebitIndicator": "DEBIT",
+              "type": "PURCHASE",
+              "purposeCode": "QHM",
+              "budgetCode": "UYX",
+              "senderCode": "NBA",
+              "beneficiaryCode": "GDI",
+              "mcc": "TLI",
+              "description": "INSFg71NChqBIUleqD0Fc4AiePZ4L74ekTmbuGnMd",
+              "createDateTime": "2021-02-20T21:11:20.838Z",
+              "bookingDateTime": "2019-06-20T15:40:36.471Z",
+              "valueDateTime": "2019-06-20T15:40:36.471Z",
+              "creditorName": "BllmP4wbIDcEpWKPpD5sZBFEMmW6lvjgLcTFT7Gz3",
+              "debtorName": "cfO5I0cFsxa7u0geX9M6fJZg53ev4u8fUNEW7Gflo",
+              "creditorAgent": {
+                  "bic": "EWU",
+                  "bin": "YTM",
+                  "name": "CRP"
+              },
+              "debtorAgent": {
+                  "bic": "QEK",
+                  "bin": "AEU",
+                  "name": "WWZ"
+              }
           },
-          "debtorAgent": {
-            "bic": "XAI",
-            "bin": "LWE",
-            "name": "UZU"
+          {
+              "transactionId": "67aa1a4d-6930-4bb1-bd59-40adbfbe9512",
+              "documentNumber": "1d199217-7633-4b1a-ae49-b31ce6c434cc",
+              "reference": "a93fb607-2e94-443a-a178-b3d8955f7c96",
+              "status": "PENDING",
+              "amount": {
+                  "amount": 46922,
+                  "currency": "USD"
+              },
+              "chargeAmount": {
+                  "amount": 6493,
+                  "currency": "KZT"
+              },
+              "creditDebitIndicator": "DEBIT",
+              "type": "TRANSFER",
+              "purposeCode": "RAK",
+              "budgetCode": "OVZ",
+              "senderCode": "FVM",
+              "beneficiaryCode": "YRQ",
+              "mcc": "LOX",
+              "description": "nSatjfHKunfLqMYKxcyLlDXxT5zh afFfnJJOP7WX",
+              "createDateTime": "2019-06-20T15:40:36.471Z",
+              "bookingDateTime": "2019-06-20T15:40:36.471Z",
+              "valueDateTime": "2019-06-20T15:40:36.471Z",
+              "creditorName": "LJd3nLtMqhNq6yGOG5q svpZoJdN 6LZ0RJPVGXrA",
+              "debtorName": "R5lK09fQawTGgVlDBTL35PClMdY7jkSOOgx e1XOD",
+              "creditorAgent": {
+                  "bic": "IZB",
+                  "bin": "LMO",
+                  "name": "QBD"
+              },
+              "debtorAgent": {
+                  "bic": "NIM",
+                  "bin": "PJW",
+                  "name": "RKG"
+              }
+          },
+          {
+              "transactionId": "f79ebf45-30b8-4e31-93d8-6597fd3cfd16",
+              "documentNumber": "faaf9b83-2d9f-492b-af78-5f7e78d0f1d8",
+              "reference": "8a17634b-a0e6-43b0-af5e-45bfd790c4e1",
+              "status": "BOOKED",
+              "amount": {
+                  "amount": 61262,
+                  "currency": "USD"
+              },
+              "chargeAmount": {
+                  "amount": 56562,
+                  "currency": "EUR"
+              },
+              "creditDebitIndicator": "DEBIT",
+              "type": "PURCHASE",
+              "purposeCode": "IPV",
+              "budgetCode": "FGH",
+              "senderCode": "LOU",
+              "beneficiaryCode": "YQE",
+              "mcc": "XCJ",
+              "description": "4wCMamPITNELLFZ ci9qgX5TK1C21qFwQZlSXiReI",
+              "createDateTime": "2019-06-20T15:40:36.471Z",
+              "bookingDateTime": "2023-12-23T07:34:28.434Z",
+              "valueDateTime": "2019-06-20T15:40:36.471Z",
+              "creditorName": "W0HUzUZecFY4m9EMXZ31r0JpXRxsQrA9n941xi 0v",
+              "debtorName": "UEJvYEOJdEcBOCgUm sEDAaFI2clvRFQVVFwYTLyi",
+              "creditorAgent": {
+                  "bic": "RYG",
+                  "bin": "KRC",
+                  "name": "NKS"
+              },
+              "debtorAgent": {
+                  "bic": "FRR",
+                  "bin": "TRR",
+                  "name": "FBW"
+              }
+          },
+          {
+              "transactionId": "3730e9fa-00a1-4084-abc8-dbddef9f3b79",
+              "documentNumber": "dc0473e4-8e0b-4c56-b85f-f95d49d7b425",
+              "reference": "2ddd9130-fbcb-4d48-bce3-95fb6bd4a1f7",
+              "status": "BOOKED",
+              "amount": {
+                  "amount": 38623,
+                  "currency": "KZT"
+              },
+              "chargeAmount": {
+                  "amount": 56040,
+                  "currency": "EUR"
+              },
+              "creditDebitIndicator": "DEBIT",
+              "type": "E_COMMERCE",
+              "purposeCode": "TYQ",
+              "budgetCode": "GIY",
+              "senderCode": "ONW",
+              "beneficiaryCode": "WCU",
+              "mcc": "XQN",
+              "description": "xle7gQNNqP3xd0tqsBTN975GkdjIIDA6RcisinaHW",
+              "createDateTime": "2023-06-26T02:24:48.23Z",
+              "bookingDateTime": "2019-06-20T15:40:36.471Z",
+              "valueDateTime": "2024-04-01T17:21:20.203Z",
+              "creditorName": "aK3WlWfE0o5 ePMHUKJH5Em5OOZBC9sDHjN1oUrIq",
+              "debtorName": "jUeAxfUffA1UdsRPZbUCeV4Zc7i3RP me3vYXI gw",
+              "creditorAgent": {
+                  "bic": "GTR",
+                  "bin": "VLI",
+                  "name": "JCJ"
+              },
+              "debtorAgent": {
+                  "bic": "PJL",
+                  "bin": "CCU",
+                  "name": "MPL"
+              }
           }
-        },
-        {
-          "transactionId": "f7e2fec8-d752-416d-a941-3738054204a1",
-          "documentNumber": "5d7a09b6-393e-48de-914b-09aa7e6b57de",
-          "reference": "b878a34c-e98b-4148-bb0b-80633aca0140",
-          "status": "BOOKED",
-          "amount": {
-            "amount": 8317,
-            "currency": "USD"
-          },
-          "chargeAmount": {
-            "amount": 62584,
-            "currency": "EUR"
-          },
-          "creditDebitIndicator": "DEBIT",
-          "type": "TRANSFER",
-          "purposeCode": "NRY",
-          "budgetCode": "MBO",
-          "senderCode": "MZX",
-          "beneficiaryCode": "SGL",
-          "mcc": "AVG",
-          "description": "rj1JUidzsqcduxH754JyGbSQRIU8WygiOCaBOCE a",
-          "createDateTime": "2019-06-11T11:36:12.355Z",
-          "bookingDateTime": "2019-06-11T11:36:12.356Z",
-          "valueDateTime": "2019-06-11T11:36:12.356Z",
-          "creditorName": "xBliaIeHTwmYL2XDaWOwqQLKKSUaaV8G YctvTUCn",
-          "debtorName": "ysuMiu9lkKaY57ROgO4qapazjUz1jmSuOXDy3oZ3E",
-          "creditorAgent": {
-            "bic": "XNT",
-            "bin": "XOF",
-            "name": "OYE"
-          },
-          "debtorAgent": {
-            "bic": "GBJ",
-            "bin": "GHL",
-            "name": "RBC"
-          }
-        },
-        {
-          "transactionId": "5a733e70-5d2e-4cf8-a48c-86650a5a7a42",
-          "documentNumber": "cafdd450-c777-43f3-a906-39880e373ac1",
-          "reference": "b995b7d2-1bee-4ece-b3d8-032bf3d60edd",
-          "status": "PENDING",
-          "amount": {
-            "amount": 84206,
-            "currency": "USD"
-          },
-          "chargeAmount": {
-            "amount": 95472,
-            "currency": "KZT"
-          },
-          "creditDebitIndicator": "CREDIT",
-          "type": "E_COMMERCE",
-          "purposeCode": "HAE",
-          "budgetCode": "ENA",
-          "senderCode": "NFZ",
-          "beneficiaryCode": "TYO",
-          "mcc": "FVE",
-          "description": "1ZASe3Ny4MaJgpmjVFfB9k4EVYGyy5KyELbkJtr4Y",
-          "createDateTime": "2019-06-11T11:36:12.356Z",
-          "bookingDateTime": "2019-06-11T11:36:12.356Z",
-          "valueDateTime": "2019-06-11T11:36:12.356Z",
-          "creditorName": "rMLMh6JDstWVw12Re6ZJB2G1rWIPrUd5mj9JeTPig",
-          "debtorName": "aSWKVGffBcno8XSyx0OZQH2qtZw NemgiYL8w56Np",
-          "creditorAgent": {
-            "bic": "ZYY",
-            "bin": "BFQ",
-            "name": "HBB"
-          },
-          "debtorAgent": {
-            "bic": "XQF",
-            "bin": "QBR",
-            "name": "VJT"
-          }
-        }
       ]
-    }
+  },
+  "page": {
+      "totalItems": 6,
+      "isLastPage": true
   }
-  
+}

@@ -1,14 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SectionList } from 'react-native';
+import { View, Text, StyleSheet, SectionList, TouchableOpacity, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import transactionsData from '../data/transactions.json';
 
 const AccountStatement = () => {
   const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   useEffect(() => {
     setTransactions(transactionsData.data.transactions);
+    setFilteredTransactions(transactionsData.data.transactions);
   }, []);
+
+  const applyFilter = () => {
+    const filtered = transactions.filter(transaction => {
+      const transactionDate = new Date(transaction.bookingDateTime);
+      return transactionDate >= startDate && transactionDate <= endDate;
+    });
+    setFilteredTransactions(filtered);
+    setIsFilterApplied(true);
+  };
+
+  const clearFilter = () => {
+    setFilteredTransactions(transactions);
+    setIsFilterApplied(false);
+  };
 
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: 'short' };
@@ -48,14 +70,42 @@ const AccountStatement = () => {
     }, {});
   };
 
-  const sections = Object.entries(groupTransactionsByDate(transactions)).map(([date, data]) => ({
+  const sections = Object.entries(groupTransactionsByDate(filteredTransactions)).map(([date, data]) => ({
     title: date,
     data,
   }));
 
+  const onStartDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || startDate;
+    setShowStartDatePicker(false);
+    setStartDate(currentDate);
+  };
+
+  const onEndDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || endDate;
+    setShowEndDatePicker(false);
+    setEndDate(currentDate);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.transactionsTitle}>История</Text>
+      <View style={styles.filterContainer}>
+        <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateButton}>
+          <Text style={styles.dateButtonText}>Начальная дата</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.dateButton}>
+          <Text style={styles.dateButtonText}>Конечная дата</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={applyFilter} style={styles.applyButton}>
+          <Text style={styles.applyButtonText}>Применить фильтр</Text>
+        </TouchableOpacity>
+        {isFilterApplied && (
+          <TouchableOpacity onPress={clearFilter} style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>Очистить фильтр</Text>
+          </TouchableOpacity>
+        )}
+      </View>
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.transactionId}
@@ -64,6 +114,22 @@ const AccountStatement = () => {
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
       />
+      {showStartDatePicker && (
+        <DateTimePicker
+          value={startDate}
+          mode="date"
+          display="default"
+          onChange={onStartDateChange}
+        />
+      )}
+      {showEndDatePicker && (
+        <DateTimePicker
+          value={endDate}
+          mode="date"
+          display="default"
+          onChange={onEndDateChange}
+        />
+      )}
     </View>
   );
 };
@@ -78,6 +144,41 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  dateButton: {
+    backgroundColor: '#00796b',
+    padding: 10,
+    borderRadius: 5,
+  },
+  dateButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  applyButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+  },
+  applyButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  clearButton: {
+    backgroundColor: '#FF5252',
+    padding: 10,
+    borderRadius: 5,
+  },
+  clearButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   sectionHeader: {
     fontSize: 16,
