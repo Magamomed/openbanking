@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Alert, KeyboardAvoidingView, Platform, SectionList } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  Alert,
+  TouchableOpacity,
+  Modal,
+  FlatList
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SavingsGoal = () => {
@@ -12,7 +22,9 @@ const SavingsGoal = () => {
   const [newGoalName, setNewGoalName] = useState('');
   const [newGoalTarget, setNewGoalTarget] = useState('');
   const [newGoalSaved, setNewGoalSaved] = useState('');
-  const [editingGoalId, setEditingGoalId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editGoalId, setEditGoalId] = useState(null);
+  const [additionalAmount, setAdditionalAmount] = useState('');
 
   const addGoal = () => {
     if (!newGoalName || !newGoalTarget || !newGoalSaved) {
@@ -31,109 +43,157 @@ const SavingsGoal = () => {
     setNewGoalName('');
     setNewGoalTarget('');
     setNewGoalSaved('');
+    setModalVisible(false); // Закрыть модальное окно после добавления цели
   };
 
-  const updateSavedAmount = (goalId, newAmount) => {
+  const updateGoal = () => {
+    if (!additionalAmount) {
+      Alert.alert('Ошибка', 'Пожалуйста, введите сумму');
+      return;
+    }
+
     const updatedGoals = savingsGoals.map(goal => {
-      if (goal.id === goalId) {
+      if (goal.id === editGoalId) {
+        const newSaved = goal.saved + parseFloat(additionalAmount);
         return {
           ...goal,
-          saved: parseFloat(newAmount),
+          saved: newSaved > goal.target ? goal.target : newSaved
         };
       }
       return goal;
     });
 
     setSavingsGoals(updatedGoals);
-    setEditingGoalId(null);
+    setEditGoalId(null);
+    setAdditionalAmount('');
   };
 
-  const renderGoal = ({ item }) => (
-    <View style={styles.goalContainer}>
-      <View style={styles.goalHeader}>
-        <Text style={styles.goalName}>{item.name}</Text>
-        <Text style={styles.goalAmount}>
-          ₸{item.saved} / ₸{item.target}
-        </Text>
-        <Icon name="pencil-circle" size={24} color="#00796b" onPress={() => setEditingGoalId(item.id)} />
-      </View>
-      {editingGoalId === item.id ? (
-        <View style={styles.editFormContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Новая сумма"
-            keyboardType="numeric"
-            value={newGoalSaved}
-            onChangeText={setNewGoalSaved}
-          />
-          <Button title="Сохранить" onPress={() => updateSavedAmount(item.id, newGoalSaved)} />
-        </View>
-      ) : (
-        <View style={styles.iconContainer}>
-          <Icon name="check-circle" size={24} color={item.saved >= item.target ? 'green' : '#ccc'} />
-          <Text style={styles.goalStatus}>{item.saved >= item.target ? 'Completed' : 'In Progress'}</Text>
-          
-        </View>
-      )}
-    </View>
-  );
+  const markAsCompleted = (goalId) => {
+    const updatedGoals = savingsGoals.map(goal => {
+      if (goal.id === goalId) {
+        return {
+          ...goal,
+          saved: goal.target
+        };
+      }
+      return goal;
+    });
 
-  const sections = [
-    {
-      title: 'Цели Сбережений',
-      data: savingsGoals,
-    },
-    {
-      title: 'Добавить новую цель',
-      data: [{}], // Пустой объект, чтобы использовать рендеринг формы как элемент списка
-    },
-  ];
+    setSavingsGoals(updatedGoals);
+  };
+
+  const getProgressBarColor = (percentage) => {
+    if (percentage <= 20) {
+      return '#d32f2f'; // красный
+    } else if (percentage <= 40) {
+      return '#fbc02d'; // желтый
+    } else {
+      return '#388e3c'; // зеленый
+    }
+  };
+
+  const renderGoal = ({ item }) => {
+    const percentage = (item.saved / item.target) * 100;
+    return (
+      <View style={styles.goalContainer}>
+        <View style={styles.goalHeader}>
+          <Text style={styles.goalName}>{item.name}</Text>
+          <TouchableOpacity onPress={() => setEditGoalId(item.id)}>
+            <Icon name="pencil" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.progressBarContainer}>
+          <View style={{ ...styles.progressBar, width: `${percentage}%`, backgroundColor: getProgressBarColor(percentage) }} />
+        </View>
+        <Text style={styles.goalProgress}>
+          {item.saved} / {item.target} ({Math.round(percentage)}%)
+        </Text>
+        {percentage === 100 && (
+          <View style={styles.completedContainer}>
+            <Icon name="check-circle" size={24} color="#388e3c" />
+            <Text style={styles.completedText}>Выполнено</Text>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
-      <SectionList
-        sections={sections}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, section }) => {
-          if (section.title === 'Добавить новую цель') {
-            return (
-              <View style={styles.formContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Название цели"
-                  value={newGoalName}
-                  onChangeText={setNewGoalName}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Целевая сумма"
-                  keyboardType="numeric"
-                  value={newGoalTarget}
-                  onChangeText={setNewGoalTarget}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Накоплено"
-                  keyboardType="numeric"
-                  value={newGoalSaved}
-                  onChangeText={setNewGoalSaved}
-                />
-                <Button title="Добавить цель" onPress={addGoal} />
-              </View>
-            );
-          } else {
-            return renderGoal({ item });
-          }
-        }}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.header}>{title}</Text>
-        )}
+    <View style={styles.container}>
+      <Text style={styles.title}>Персональные цели</Text>
+      <FlatList
+        data={savingsGoals}
+        renderItem={renderGoal}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.goalList}
       />
-    </KeyboardAvoidingView>
+      <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.addButtonText}>Добавить цель</Text>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Новая Цель</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Название цели"
+              placeholderTextColor="#000"
+              value={newGoalName}
+              onChangeText={setNewGoalName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Целевая сумма"
+              keyboardType="numeric"
+              placeholderTextColor="#000"
+              value={newGoalTarget}
+              onChangeText={setNewGoalTarget}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Накоплено"
+              keyboardType="numeric"
+              placeholderTextColor="#000"
+              value={newGoalSaved}
+              onChangeText={setNewGoalSaved}
+            />
+            <Button title="Добавить цель" onPress={addGoal} />
+            <Button title="Отмена" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
+
+      {editGoalId && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={!!editGoalId}
+          onRequestClose={() => setEditGoalId(null)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Добавить сумму</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Сумма"
+                keyboardType="numeric"
+                placeholderTextColor="#000"
+                value={additionalAmount}
+                onChangeText={setAdditionalAmount}
+              />
+              <Button title="Обновить цель" onPress={updateGoal} />
+              <Button title="Отмена" onPress={() => setEditGoalId(null)} />
+            </View>
+          </View>
+        </Modal>
+      )}
+    </View>
   );
 };
 
@@ -141,13 +201,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
+    padding: 20,
   },
-  header: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 10,
-    textAlign: 'center',
     color: '#00796b',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  goalList: {
+    paddingBottom: 20,
   },
   goalContainer: {
     backgroundColor: '#fff',
@@ -162,43 +226,76 @@ const styles = StyleSheet.create({
   goalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
   },
   goalName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#00796b',
+    color: '#333',
   },
-  goalAmount: {
-    fontSize: 16,
-    color: '#00796b',
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  editFormContainer: {
-    marginTop: 10,
+  progressBarContainer: {
+    backgroundColor: '#e0e0e0',
+    borderRadius: 5,
+    height: 10,
+    overflow: 'hidden',
     marginBottom: 10,
   },
-  goalStatus: {
-    fontSize: 16,
-    marginLeft: 10,
-    marginRight: 10,
-    color: '#00796b',
+  progressBar: {
+    height: '100%',
   },
-  formContainer: {
-    marginTop: 20,
+  goalProgress: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  completedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  completedText: {
+    fontSize: 16,
+    color: '#388e3c',
+    marginLeft: 5,
+  },
+  addButton: {
+    backgroundColor: '#00796b',
+    borderRadius: 10,
+    padding: 15,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   input: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    borderColor: '#00796b',
+    height: 40,
+    borderColor: '#ccc',
     borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 
