@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SectionList, TouchableOpacity, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import transactionsData from '../data/transactions.json';
+import FilterModal from './FilterModal';
 
 const AccountStatement = () => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   useEffect(() => {
@@ -18,25 +15,28 @@ const AccountStatement = () => {
     setFilteredTransactions(transactionsData.data.transactions);
   }, []);
 
-  const applyFilter = () => {
+  const applyFilter = (startDate, endDate) => {
     const filtered = transactions.filter(transaction => {
       const transactionDate = new Date(transaction.bookingDateTime);
       return transactionDate >= startDate && transactionDate <= endDate;
     });
     setFilteredTransactions(filtered);
     setIsFilterApplied(true);
+    setShowFilterModal(false);
   };
 
   const clearFilter = () => {
     setFilteredTransactions(transactions);
     setIsFilterApplied(false);
+    setShowFilterModal(false);
   };
 
   const formatDate = (dateString) => {
-    const options = { day: '2-digit', month: 'short' };
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', options).toUpperCase();
   };
+  
 
   const getTransactionType = (indicator) => {
     return indicator === 'CREDIT' ? 'income' : 'expense';
@@ -75,31 +75,15 @@ const AccountStatement = () => {
     data,
   }));
 
-  const onStartDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || startDate;
-    setShowStartDatePicker(false);
-    setStartDate(currentDate);
-  };
-
-  const onEndDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || endDate;
-    setShowEndDatePicker(false);
-    setEndDate(currentDate);
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.transactionsTitle}>История</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.transactionsTitle}>История</Text>
+        <TouchableOpacity onPress={() => setShowFilterModal(true)} style={styles.iconButton}>
+          <Icon name="filter" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.filterContainer}>
-        <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateButton}>
-          <Text style={styles.dateButtonText}>Начальная дата</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.dateButton}>
-          <Text style={styles.dateButtonText}>Конечная дата</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={applyFilter} style={styles.applyButton}>
-          <Text style={styles.applyButtonText}>Применить фильтр</Text>
-        </TouchableOpacity>
         {isFilterApplied && (
           <TouchableOpacity onPress={clearFilter} style={styles.clearButton}>
             <Text style={styles.clearButtonText}>Очистить фильтр</Text>
@@ -114,22 +98,12 @@ const AccountStatement = () => {
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
       />
-      {showStartDatePicker && (
-        <DateTimePicker
-          value={startDate}
-          mode="date"
-          display="default"
-          onChange={onStartDateChange}
-        />
-      )}
-      {showEndDatePicker && (
-        <DateTimePicker
-          value={endDate}
-          mode="date"
-          display="default"
-          onChange={onEndDateChange}
-        />
-      )}
+      <FilterModal
+        visible={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        onApply={applyFilter}
+        onClear={clearFilter}
+      />
     </View>
   );
 };
@@ -140,35 +114,28 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f9f9f9',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   transactionsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
   },
-  filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  dateButton: {
+  iconButton: {
     backgroundColor: '#00796b',
     padding: 10,
     borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  dateButtonText: {
-    color: '#fff',
-    fontSize: 14,
-  },
-  applyButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
-  },
-  applyButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 20,
+    alignItems: 'center',
   },
   clearButton: {
     backgroundColor: '#FF5252',

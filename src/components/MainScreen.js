@@ -98,21 +98,23 @@ const MainScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       {data.creditLine && (
-        <View style={styles.creditLineContainer}>
-          <Text style={styles.sectionTitle}>Кредитные линии</Text>
-          {data.creditLine.map((line, index) => (
-            <View key={index} style={styles.creditLineItem}>
-              <Text style={styles.creditLineType}>{line.type}</Text>
-              <Text style={styles.creditLineAmount}>
-                {line.amount.currency} {line.amount.amount}
-              </Text>
-              <Text style={styles.creditLineIncluded}>
-                Включено: {line.included ? "Да" : "Нет"}
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
+  <View style={styles.creditLineContainer}>
+    <Text style={styles.sectionTitle}>Кредитные линии</Text>
+    {data.creditLine.map((line, index) => (
+      <View key={index} style={styles.creditLineItem}>
+        <Text style={styles.creditLineType}>{line.type}</Text>
+        <Text style={styles.creditLineAmount}>
+          {line.amount.currency} {line.amount.amount}
+        </Text>
+        <Text style={styles.creditLineIncluded}>
+          Включено: {line.included ? "Да" : "Нет"}
+        </Text>
+      </View>
+    ))}
+  </View>
+)}
+
+
 
       {data.purses && (
         <View style={styles.pursesContainer}>
@@ -290,30 +292,43 @@ const styles = StyleSheet.create({
   },
   creditLineContainer: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 15,
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 3,
+    elevation: 4,
   },
   creditLineItem: {
     marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingBottom: 10,
   },
   creditLineType: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#333',
+    marginBottom: 5,
   },
   creditLineAmount: {
     fontSize: 16,
-    color: '#666',
+    fontWeight: '500',
+    color: '#555',
+    marginBottom: 5,
   },
   creditLineIncluded: {
     fontSize: 14,
+    fontWeight: '400',
     color: '#888',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#00796b',
+    marginBottom: 10,
   },
   pursesContainer: {
     backgroundColor: '#fff',

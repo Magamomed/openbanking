@@ -1,7 +1,7 @@
 {
   "data": {
-    "currentBalance": 20314,
-    "availableBalance": 18084,
+    "currentBalance": 232230,
+    "availableBalance": 230000,
     "blockedBalance": 2230,
     "currency": "KZT",
     "creditLine": [
@@ -62,36 +62,29 @@
     ],
     "accounts": [
       {
-        "bankName": "Bank 1",
+        "bankName": "Банк Центр Кредит",
         "currentBalance": 30000,
         "availableBalance": 0,
         "blockedBalance": 0,
         "currency": "KZT"
       },
       {
-        "bankName": "Bank 2",
+        "bankName": "Отбасы Банк",
         "currentBalance": 40000,
         "availableBalance": 0,
         "blockedBalance": 0,
         "currency": "KZT"
       },
       {
-        "bankName": "Bank 3",
+        "bankName": "AO 'Bank RBK'",
         "currentBalance": 100000,
         "availableBalance": 0,
         "blockedBalance": 0,
         "currency": "KZT"
       },
       {
-        "bankName": "Bank 4",
+        "bankName": "AO 'Home Credit Bank'",
         "currentBalance": 60000,
-        "availableBalance": 0,
-        "blockedBalance": 0,
-        "currency": "KZT"
-      },
-      {
-        "bankName": "Bank 5",
-        "currentBalance": 10000,
         "availableBalance": 0,
         "blockedBalance": 0,
         "currency": "KZT"
