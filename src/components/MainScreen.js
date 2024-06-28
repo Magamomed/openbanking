@@ -78,6 +78,18 @@ const MainScreen = ({ navigation }) => {
         <Text style={styles.balanceSubAmount}>Заблокированный баланс: ₸ {data.blockedBalance}</Text>
       </View>
 
+            {/* Слайдер для дополнительных счетов */}
+            <ScrollView horizontal pagingEnabled style={styles.slider}>
+        {data.accounts && data.accounts.map((account, index) => (
+          <View key={index} style={styles.slide}>
+            <Text style={styles.accountBankName}>{account.bankName}</Text>
+            <Text style={styles.accountBalance}>Текущий баланс: {account.currentBalance} {account.currency}</Text>
+            <Text style={styles.accountAvailableBalance}>Доступный баланс: {account.availableBalance} {account.currency}</Text>
+            <Text style={styles.accountBlockedBalance}>Заблокированный баланс: {account.blockedBalance} {account.currency}</Text>
+          </View>
+        ))}
+      </ScrollView>
+
       <TouchableOpacity onPress={() => navigation.navigate('Statements')}>
         <View style={styles.sortContainer}>
           <Text style={styles.sortText}>История</Text>
@@ -114,9 +126,6 @@ const MainScreen = ({ navigation }) => {
         </View>
       )}
 
-      <View style={styles.accountAnalyticsContainer}>
-        <AccountAnalytics />
-      </View>
 
       <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.addButtonText}>Добавить счета других банков</Text>
@@ -248,6 +257,35 @@ const styles = StyleSheet.create({
   },
   sortText: {
     fontSize: 16,
+    color: '#666',
+  },
+  slide: {
+    width: 350,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    marginRight: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  accountBankName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  accountBalance: {
+    fontSize: 14,
+    color: '#666',
+  },
+  accountAvailableBalance: {
+    fontSize: 14,
+    color: '#666',
+  },
+  accountBlockedBalance: {
+    fontSize: 14,
     color: '#666',
   },
   creditLineContainer: {

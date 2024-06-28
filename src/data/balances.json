@@ -1,65 +1,101 @@
 {
-    "data": {
-      "currentBalance": 20314,
-      "availableBalance": 18084,
-      "blockedBalance": 2230,
-      "currency": "KZT",
-      "creditLine": [
-        {
-          "included": false,
-          "type": "PRE_AGREED",
-          "amount": {
-            "amount": 23866,
-            "currency": "KZT"
-          }
-        },
-        {
-          "included": true,
-          "type": "AVAILABLE",
-          "amount": {
-            "amount": 81874,
-            "currency": "KZT"
-          }
-        },
-        {
-          "included": true,
-          "type": "AVAILABLE",
-          "amount": {
-            "amount": 97398,
-            "currency": "KZT"
-          }
-        },
-        {
-          "included": false,
-          "type": "AVAILABLE",
-          "amount": {
-            "amount": 30577,
-            "currency": "KZT"
-          }
-        },
-        {
-          "included": false,
-          "type": "AVAILABLE",
-          "amount": {
-            "amount": 79499,
-            "currency": "KZT"
-          }
-        }
-      ],
-      "purses": [
-        {
-          "amount": 87755,
-          "currency": "KZT"
-        },
-        {
-          "amount": 37069,
-          "currency": "USD"
-        },
-        {
-          "amount": 62676,
+  "data": {
+    "currentBalance": 20314,
+    "availableBalance": 18084,
+    "blockedBalance": 2230,
+    "currency": "KZT",
+    "creditLine": [
+      {
+        "included": false,
+        "type": "PRE_AGREED",
+        "amount": {
+          "amount": 23866,
           "currency": "KZT"
         }
-      ]
-    }
+      },
+      {
+        "included": true,
+        "type": "AVAILABLE",
+        "amount": {
+          "amount": 81874,
+          "currency": "KZT"
+        }
+      },
+      {
+        "included": true,
+        "type": "AVAILABLE",
+        "amount": {
+          "amount": 97398,
+          "currency": "KZT"
+        }
+      },
+      {
+        "included": false,
+        "type": "AVAILABLE",
+        "amount": {
+          "amount": 30577,
+          "currency": "KZT"
+        }
+      },
+      {
+        "included": false,
+        "type": "AVAILABLE",
+        "amount": {
+          "amount": 79499,
+          "currency": "KZT"
+        }
+      }
+    ],
+    "purses": [
+      {
+        "amount": 87755,
+        "currency": "KZT"
+      },
+      {
+        "amount": 37069,
+        "currency": "USD"
+      },
+      {
+        "amount": 62676,
+        "currency": "KZT"
+      }
+    ],
+    "accounts": [
+      {
+        "bankName": "Bank 1",
+        "currentBalance": 30000,
+        "availableBalance": 0,
+        "blockedBalance": 0,
+        "currency": "KZT"
+      },
+      {
+        "bankName": "Bank 2",
+        "currentBalance": 40000,
+        "availableBalance": 0,
+        "blockedBalance": 0,
+        "currency": "KZT"
+      },
+      {
+        "bankName": "Bank 3",
+        "currentBalance": 100000,
+        "availableBalance": 0,
+        "blockedBalance": 0,
+        "currency": "KZT"
+      },
+      {
+        "bankName": "Bank 4",
+        "currentBalance": 60000,
+        "availableBalance": 0,
+        "blockedBalance": 0,
+        "currency": "KZT"
+      },
+      {
+        "bankName": "Bank 5",
+        "currentBalance": 10000,
+        "availableBalance": 0,
+        "blockedBalance": 0,
+        "currency": "KZT"
+      }
+    ]
   }
-  
+}
