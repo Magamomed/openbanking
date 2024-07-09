@@ -67,6 +67,7 @@
         "availableBalance": 0,
         "blockedBalance": 0,
         "currency": "KZT"
+
       },
       {
         "bankName": "Отбасы Банк",
@@ -81,6 +82,7 @@
         "availableBalance": 0,
         "blockedBalance": 0,
         "currency": "KZT"
+
       },
       {
         "bankName": "AO 'Home Credit Bank'",
@@ -88,6 +90,7 @@
         "availableBalance": 0,
         "blockedBalance": 0,
         "currency": "KZT"
+
       }
     ]
   }

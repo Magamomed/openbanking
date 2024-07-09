@@ -10,55 +10,61 @@ import AccountBalance from '../components/AccountBalance';
 import TotalBalance from '../components/TotalBalance';
 import SavingsGoal from '../components/SavingsGoal';
 import ProfileSettingsScreen from '../components/ProfileSettingScreen';
+import SelectAccountScreen from '../components/SelectAccountScreen';
+import { AccountProvider } from '../components/AccountContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+const ProfileStackNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="ProfileSettingsScreen" component={ProfileSettingsScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="SelectAccount" component={SelectAccountScreen} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
 const AppNavigator = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
+    <AccountProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+              let iconName;
 
-            switch (route.name) {
-              case 'Main':
-                iconName = 'wallet';
-                break;
-              case 'Accounts':
-                iconName = 'bank';
-                break;
-              case 'Statements':
-                iconName = 'file-document';
-                break;
-              case 'Balances':
-                iconName = 'scale-balance';
-                break;
-              case 'Goals':
-                iconName = 'target';
-                break;
-              default:
-                iconName = 'wallet';
-                break;
-            }
+              switch (route.name) {
+                case 'Main':
+                  iconName = 'wallet';
+                  break;
+                case 'Accounts':
+                  iconName = 'bank';
+                  break;
+                case 'Statements':
+                  iconName = 'file-document';
+                  break;
+                case 'Balances':
+                  iconName = 'scale-balance';
+                  break;
+                case 'Goals':
+                  iconName = 'target';
+                  break;
+                default:
+                  iconName = 'wallet';
+                  break;
+              }
 
-            return <Icon name={iconName} size={size} color={color} />;
-          },
-        })}
-      >
-        <Tab.Screen name="Main" component={MainScreen} options={{ tabBarLabel: 'Главная' }} />
-        <Tab.Screen name="Statements" component={AccountStatement} options={{ tabBarLabel: 'История' }} />
-        <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Аналитика' }} />
-        <Tab.Screen name="Goals" component={SavingsGoal} options={{ tabBarLabel: 'Цель' }} />
-        <Stack.Screen 
-          name="ProfileSettings" 
-          component={ProfileSettingsScreen} 
-
-        />
-      </Tab.Navigator>
-
-    </NavigationContainer>
+              return <Icon name={iconName} size={size} color={color} />;
+            },
+          })}
+        >
+          <Tab.Screen name="Main" component={MainScreen} options={{ tabBarLabel: 'Главная' }} />
+          <Tab.Screen name="Statements" component={AccountStatement} options={{ tabBarLabel: 'История' }} />
+          <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Аналитика' }} />
+          <Tab.Screen name="Goals" component={SavingsGoal} options={{ tabBarLabel: 'Цель' }} />
+          <Tab.Screen name="ProfileSettings" component={ProfileStackNavigator} options={{ tabBarLabel: 'Профиль' }} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </AccountProvider>
   );
 };
 

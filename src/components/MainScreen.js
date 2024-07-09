@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Modal, TouchableOpacity, ScrollView, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import AccountAnalytics from '../components/AccountAnalytics';
 import balanceData from '../data/balances.json';
+import TransferModal from './TransferModal';
+
+const images = {
+  "Банк Центр Кредит": require('../img/logo-otbasy-bank_white_converted.png'),
+  "Отбасы Банк": require('../img/logo-otbasy-bank_white_converted.png'),
+  "AO 'Bank RBK'": require('../img/logo-otbasy-bank_white_converted.png'),
+  "AO 'Home Credit Bank'": require('../img/logo-otbasy-bank_white_converted.png'),
+};
 
 const MainScreen = ({ navigation }) => {
   const [data, setData] = useState(balanceData.data);
   const [modalVisible, setModalVisible] = useState(false);
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
+  const [transferVisible, setTransferVisible] = useState(false);
   const [cvv, setCvv] = useState('');
   const [errors, setErrors] = useState({});
 
@@ -47,6 +55,23 @@ const MainScreen = ({ navigation }) => {
     }
   };
 
+  const handleTransfer = (source, destination, amount) => {
+    // Find the source and destination accounts
+    const sourceAccount = data.accounts.find(account => account.bankName === source);
+    const destinationAccount = data.accounts.find(account => account.bankName === destination);
+
+    if (sourceAccount && destinationAccount) {
+      // Update balances
+      sourceAccount.currentBalance -= amount;
+      destinationAccount.currentBalance += amount;
+
+      // Update the state
+      setData({ ...data });
+    }
+
+    setTransferVisible(false);
+  };
+
   const handleCardNumberChange = (text) => {
     setCardNumber(text.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim());
   };
@@ -78,10 +103,11 @@ const MainScreen = ({ navigation }) => {
         <Text style={styles.balanceSubAmount}>Заблокированный баланс: ₸ {data.blockedBalance}</Text>
       </View>
 
-            {/* Слайдер для дополнительных счетов */}
-            <ScrollView horizontal pagingEnabled style={styles.slider}>
+      {/* Слайдер для дополнительных счетов */}
+      <ScrollView horizontal pagingEnabled style={styles.slider}>
         {data.accounts && data.accounts.map((account, index) => (
           <View key={index} style={styles.slide}>
+            <Image source={images[account.bankName]} style={styles.accountLogo} resizeMode="contain" />
             <Text style={styles.accountBankName}>{account.bankName}</Text>
             <Text style={styles.accountBalance}>Текущий баланс: {account.currentBalance} {account.currency}</Text>
             <Text style={styles.accountAvailableBalance}>Доступный баланс: {account.availableBalance} {account.currency}</Text>
@@ -98,23 +124,21 @@ const MainScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       {data.creditLine && (
-  <View style={styles.creditLineContainer}>
-    <Text style={styles.sectionTitle}>Кредитные линии</Text>
-    {data.creditLine.map((line, index) => (
-      <View key={index} style={styles.creditLineItem}>
-        <Text style={styles.creditLineType}>{line.type}</Text>
-        <Text style={styles.creditLineAmount}>
-          {line.amount.currency} {line.amount.amount}
-        </Text>
-        <Text style={styles.creditLineIncluded}>
-          Включено: {line.included ? "Да" : "Нет"}
-        </Text>
-      </View>
-    ))}
-  </View>
-)}
-
-
+        <View style={styles.creditLineContainer}>
+          <Text style={styles.sectionTitle}>Кредитные линии</Text>
+          {data.creditLine.map((line, index) => (
+            <View key={index} style={styles.creditLineItem}>
+              <Text style={styles.creditLineType}>{line.type}</Text>
+              <Text style={styles.creditLineAmount}>
+                {line.amount.currency} {line.amount.amount}
+              </Text>
+              <Text style={styles.creditLineIncluded}>
+                Включено: {line.included ? "Да" : "Нет"}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
 
       {data.purses && (
         <View style={styles.pursesContainer}>
@@ -272,6 +296,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+  },
+  accountLogo: {
+    width: 150, // Increase the width
+    height: 75, // Increase the height
+    marginBottom: 10, // Add some space below the image
   },
   accountBankName: {
     fontSize: 16,
