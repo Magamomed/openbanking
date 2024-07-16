@@ -65,7 +65,7 @@ const AppNavigator = () => {
       })}
     >
       <Tab.Screen name="Main">
-        {props => <MainScreen {...props} user={currentUser} />}
+        {props => <MainScreen {...props} user={currentUser} setUser={setCurrentUser} />}
       </Tab.Screen>
       <Tab.Screen name="Statements" component={AccountStatement} options={{ tabBarLabel: 'История' }} />
       <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Аналитика' }} />

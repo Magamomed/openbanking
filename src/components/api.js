@@ -12,7 +12,7 @@ const api = axios.create({
 export const registerUser = async (user) => {
   try {
     console.log('Sending user data:', user);
-    const response = await api.post('/users/', user);
+    const response = await api.post('/register/', user);
     console.log('Response data:', response.data);
     return response.data;
   } catch (error) {
@@ -52,3 +52,14 @@ export const transferFunds = async (transferData) => {
 	  throw error;
 	}
   };
+
+  export const getUserData = async (userId) => {
+	try {
+	  const response = await api.get(`/users/${userId}/`);
+	  return response.data;
+	} catch (error) {
+	  console.error('Error fetching user data:', error);
+	  throw error;
+	}
+  };
+

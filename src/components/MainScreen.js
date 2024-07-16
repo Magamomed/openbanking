@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getUserData } from './api';
 
 const images = {
   "Банк Центр Кредит": require('../img/logo-otbasy-bank_white_converted.png'),
@@ -9,7 +10,26 @@ const images = {
   "AO 'Home Credit Bank'": require('../img/logo-otbasy-bank_white_converted.png'),
 };
 
-const MainScreen = ({ user }) => {
+const MainScreen = ({ user, setUser }) => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const convertStringToNumber = (str) => parseFloat(str);
+
+  const updateUserData = async () => {
+    try {
+      const updatedUser = await getUserData(user.id);
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('Ошибка обновления данных пользователя:', error);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await updateUserData();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     if (user) {
       console.log('Текущий пользователь:', user);
@@ -25,10 +45,13 @@ const MainScreen = ({ user }) => {
     );
   }
 
-  const convertStringToNumber = (str) => parseFloat(str);
-
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={styles.header}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{user.name.charAt(0)}</Text>
@@ -45,10 +68,10 @@ const MainScreen = ({ user }) => {
       </View>
 
       <ScrollView horizontal pagingEnabled style={styles.slider}>
-        {user.accounts && user.accounts.map((account, index) => (
-          <View key={index} style={styles.slide}>
+        {user.accounts && user.accounts.map((account) => (
+          <View key={account.id} style={styles.slide}>
             <Image source={images[account.bank_name]} style={styles.accountLogo} resizeMode="contain" />
-            <Text style={styles.accountBankName}>{account.bank_name}</Text>
+            <Text style={styles.accountBankName}>{account.bank_name} (ID: {account.id})</Text>
             <Text style={styles.accountBalance}>Текущий баланс: {convertStringToNumber(account.current_balance)} {account.currency}</Text>
             <Text style={styles.accountAvailableBalance}>Доступный баланс: {convertStringToNumber(account.available_balance)} {account.currency}</Text>
             <Text style={styles.accountBlockedBalance}>Заблокированный баланс: {convertStringToNumber(account.blocked_balance)} {account.currency}</Text>
