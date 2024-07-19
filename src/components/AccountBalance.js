@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Swipeable } from 'react-native-gesture-handler';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -11,9 +12,9 @@ const BankAnalyticsCategoriesScreen = () => {
     {
       bank: 'Банк Центр Кредит',
       categories: [
-        { category: 'Еда', amount: 5000 },
-        { category: 'Транспорт', amount: 1000 },
-        { category: 'Развлечения', amount: 2000 },
+        { category: 'Еда', amount: 5000, limit: 3000 },
+        { category: 'Транспорт', amount: 1000, limit: 2000 },
+        { category: 'Развлечения', amount: 2000, limit: 1500 },
       ],
       transactions: [
         { id: 1, name: 'Кафе', date: '17 июня', amount: -500 },
@@ -24,9 +25,9 @@ const BankAnalyticsCategoriesScreen = () => {
     {
       bank: 'Отбасы Банк',
       categories: [
-        { category: 'Еда', amount: 5600 },
-        { category: 'Транспорт', amount: 2500 },
-        { category: 'Развлечения', amount: 1500 },
+        { category: 'Еда', amount: 5600, limit: 30000 },
+        { category: 'Транспорт', amount: 2500, limit: 10000 },
+        { category: 'Развлечения', amount: 1500, limit: 5000 },
       ],
       transactions: [
         { id: 1, name: 'Магазин', date: '17 июня', amount: -1500 },
@@ -36,9 +37,9 @@ const BankAnalyticsCategoriesScreen = () => {
     {
       bank: 'AO "Bank RBK"',
       categories: [
-        { category: 'Еда', amount: 4500 },
-        { category: 'Транспорт', amount: 2000 },
-        { category: 'Развлечения', amount: 1800 },
+        { category: 'Еда', amount: 4500, limit: 30000 },
+        { category: 'Транспорт', amount: 2000, limit: 10000 },
+        { category: 'Развлечения', amount: 1800, limit: 5000 },
       ],
       transactions: [
         { id: 1, name: 'Супермаркет', date: '17 июня', amount: -2000 },
@@ -48,9 +49,9 @@ const BankAnalyticsCategoriesScreen = () => {
     {
       bank: 'AO "Home Credit Bank"',
       categories: [
-        { category: 'Еда', amount: 4700 },
-        { category: 'Транспорт', amount: 2800 },
-        { category: 'Развлечения', amount: 1200 },
+        { category: 'Еда', amount: 4700, limit: 30000 },
+        { category: 'Транспорт', amount: 2800, limit: 10000 },
+        { category: 'Развлечения', amount: 1200, limit: 5000 },
       ],
       transactions: [
         { id: 1, name: 'Обед', date: '17 июня', amount: -300 },
@@ -60,6 +61,30 @@ const BankAnalyticsCategoriesScreen = () => {
   ];
 
   const [selectedBank, setSelectedBank] = useState(testData[0]);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const newNotifications = [];
+    selectedBank.categories.forEach((category) => {
+      if (category.amount > category.limit) {
+        newNotifications.push({
+          id: category.category,
+          message: `Вы превысили лимит на ${category.category}. Лимит: ${category.limit}, Расходы: ${category.amount}`,
+        });
+      }
+    });
+    setNotifications(newNotifications);
+  }, [selectedBank]);
+
+  const dismissNotification = (id) => {
+    setNotifications(notifications.filter((notification) => notification.id !== id));
+  };
+
+  const renderRightActions = (id) => (
+    <TouchableOpacity onPress={() => dismissNotification(id)} style={styles.dismissButton}>
+      <Text style={styles.dismissButtonText}>Убрать</Text>
+    </TouchableOpacity>
+  );
 
   const renderBankAnalytics = (bankData) => {
     const barData = {
@@ -104,6 +129,15 @@ const BankAnalyticsCategoriesScreen = () => {
             </View>
           ))}
         </ScrollView>
+        <View style={styles.notificationList}>
+          {notifications.map((notification) => (
+            <Swipeable key={notification.id} renderRightActions={() => renderRightActions(notification.id)}>
+              <View style={styles.notificationItem}>
+                <Text>{notification.message}</Text>
+              </View>
+            </Swipeable>
+          ))}
+        </View>
       </View>
     );
   };
@@ -124,7 +158,9 @@ const BankAnalyticsCategoriesScreen = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      {renderBankAnalytics(selectedBank)}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {renderBankAnalytics(selectedBank)}
+      </ScrollView>
     </View>
   );
 };
@@ -152,31 +188,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   bankItem: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    width: 150, // Фиксированная ширина
+    height: 40, // Фиксированная высота
+    justifyContent: 'center', // Центрирование текста по вертикали
     borderRadius: 20,
     marginHorizontal: 5,
     backgroundColor: '#e7e7e7',
   },
   selectedBankItem: {
     backgroundColor: '#2296F3',
+    width: 150, // Фиксированная ширина
+    height: 40, // Фиксированная высота
   },
   bankName: {
     color: '#333',
+    textAlign: 'center', // Центрирование текста по горизонтали
   },
   selectedBankName: {
     color: '#fff',
+    textAlign: 'center', // Центрирование текста по горизонтали
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
   analyticsContainer: {
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 16,
-    margin: 20,
+    marginVertical: 10,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
+    width: '100%', // Ширина контейнера
   },
   chartTitle: {
     fontSize: 18,
@@ -225,6 +273,29 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  notificationList: {
+    marginTop: 10,
+  },
+  notificationItem: {
+    backgroundColor: '#ffdddd',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+  },
+  dismissButton: {
+    backgroundColor: '#ff3333',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    height: '100%',
+    borderRadius: 10,
+  },
+  dismissButtonText: {
+    color: '#fff',
     fontWeight: 'bold',
   },
 });

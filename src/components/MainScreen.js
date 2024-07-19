@@ -4,10 +4,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getUserData } from './api';
 
 const images = {
-  "Банк Центр Кредит": require('../img/logo-otbasy-bank_white_converted.png'),
+  "Банк Центр Кредит": require('../img/bckbacnk.jpg'),
   "Отбасы Банк": require('../img/logo-otbasy-bank_white_converted.png'),
-  "AO 'Bank RBK'": require('../img/logo-otbasy-bank_white_converted.png'),
-  "AO 'Home Credit Bank'": require('../img/logo-otbasy-bank_white_converted.png'),
+  "AO 'Bank RBK'": require('../img/banckrbk.jpg'),
+  "AO 'Home Credit Bank'": require('../img/homecreditbank.jpg'),
 };
 
 const MainScreen = ({ user, setUser }) => {
@@ -79,9 +79,6 @@ const MainScreen = ({ user, setUser }) => {
         ))}
       </ScrollView>
 
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addButtonText}>Добавить счета других банков</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 };

@@ -63,3 +63,13 @@ export const transferFunds = async (transferData) => {
 	}
   };
 
+  export const getTransactions = async (userId) => {
+	try {
+	  const response = await api.get(`/users/${userId}/transactions/`);
+	  return response.data;
+	} catch (error) {
+	  console.error('Error fetching transactions:', error);
+	  throw error;
+	}
+  };
+

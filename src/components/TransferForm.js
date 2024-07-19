@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity,  Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Modal, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { transferFunds } from './api';
 import { Picker } from '@react-native-picker/picker';
-
 
 const TransferForm = ({ currentUser }) => {
   const [senderAccountId, setSenderAccountId] = useState('');
   const [recipientEmail, setRecipientEmail] = useState('');
   const [recipientAccountId, setRecipientAccountId] = useState('');
   const [amount, setAmount] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleTransfer = async () => {
     try {
@@ -29,24 +29,48 @@ const TransferForm = ({ currentUser }) => {
     }
   };
 
+  const handleAccountSelect = (account) => {
+    setSenderAccountId(account.id);
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Перевод средств</Text>
-      
+
       <Text style={styles.label}>Выберите счет отправителя</Text>
-      <Picker
-        selectedValue={senderAccountId}
-        onValueChange={(itemValue) => setSenderAccountId(itemValue)}
-        style={styles.picker}
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.pickerButton}>
+        <Text style={styles.pickerButtonText}>
+          {senderAccountId ? `${currentUser.accounts.find(acc => acc.id === senderAccountId).bank_name} (${currentUser.accounts.find(acc => acc.id === senderAccountId).current_balance})` : 'Выберите счет'}
+        </Text>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
       >
-        {currentUser.accounts.map((account) => (
-          <Picker.Item
-            key={account.id}
-            label={`${account.bank_name} (ID: ${account.id})`}
-            value={account.id}
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay} />
+        </TouchableWithoutFeedback>
+        <View style={styles.modalContainer}>
+          <FlatList
+            data={currentUser.accounts}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.modalItem} onPress={() => handleAccountSelect(item)}>
+                <Text style={styles.modalItemText}>
+                  {item.bank_name} ({item.current_balance})
+                </Text>
+              </TouchableOpacity>
+            )}
           />
-        ))}
-      </Picker>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+            <Text style={styles.closeButtonText}>Закрыть</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
       <TextInput
         style={styles.input}
@@ -93,13 +117,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
   },
-  picker: {
-    height: 50,
-    marginBottom: 100,
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
+  pickerButton: {
     borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 5,
+    padding: 10,
+    backgroundColor: '#fff',
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  pickerButtonText: {
+    fontSize: 16,
   },
   input: {
     height: 50,
@@ -117,6 +147,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    margin: 20,
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  modalItemText: {
+    fontSize: 16,
+  },
+  closeButton: {
+    backgroundColor: '#FF5252',
+    borderRadius: 5,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  closeButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',

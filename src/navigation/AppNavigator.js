@@ -67,10 +67,11 @@ const AppNavigator = () => {
       <Tab.Screen name="Main">
         {props => <MainScreen {...props} user={currentUser} setUser={setCurrentUser} />}
       </Tab.Screen>
-      <Tab.Screen name="Statements" component={AccountStatement} options={{ tabBarLabel: 'История' }} />
+      <Tab.Screen name="Statements">
+        {props => <AccountStatement {...props} user={currentUser} />}
+      </Tab.Screen>
       <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Аналитика' }} />
       <Tab.Screen name="Goals" component={SavingsGoal} options={{ tabBarLabel: 'Цель' }} />
-      <Tab.Screen name="ProfileSettings" component={ProfileSettingsScreen} options={{ tabBarLabel: 'Профиль' }} />
       <Tab.Screen name="Transfer" options={{ tabBarLabel: 'Перевод' }}>
         {props => <TransferForm {...props} currentUser={currentUser} />}
       </Tab.Screen>

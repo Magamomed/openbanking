@@ -75,6 +75,8 @@ const RegisterForm = ({ navigation }) => {
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
@@ -82,6 +84,7 @@ const RegisterForm = ({ navigation }) => {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
@@ -89,8 +92,11 @@ const RegisterForm = ({ navigation }) => {
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
+          autoCapitalize="none"
         />
-        <Button title="Register" onPress={handleRegister} />
+        <View style={styles.buttonContainer}>
+          <Button title="Register" onPress={handleRegister} color="#4CAF50" />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -101,18 +107,33 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 28,
+    marginBottom: 20,
     textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#333',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: '#ddd',
     borderWidth: 1,
-    marginBottom: 12,
-    padding: 10,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    borderRadius: 25,
+    overflow: 'hidden',
   },
 });
 

@@ -1,23 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SectionList, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, SectionList, TouchableOpacity, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import transactionsData from '../data/transactions.json';
+import { getTransactions } from './api';
 import FilterModal from './FilterModal';
 
-const AccountStatement = () => {
+const AccountStatement = ({ user }) => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadTransactions = async () => {
+    try {
+      setRefreshing(true);
+      const data = await getTransactions(user.id);
+      setTransactions(data);
+      setFilteredTransactions(data);
+      setRefreshing(false);
+    } catch (error) {
+      console.error('Ошибка загрузки транзакций:', error);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    setTransactions(transactionsData.data.transactions);
-    setFilteredTransactions(transactionsData.data.transactions);
-  }, []);
+    loadTransactions();
+  }, [user]);
 
   const applyFilter = (startDate, endDate) => {
     const filtered = transactions.filter(transaction => {
-      const transactionDate = new Date(transaction.bookingDateTime);
+      const transactionDate = new Date(transaction.date);
       return transactionDate >= startDate && transactionDate <= endDate;
     });
     setFilteredTransactions(filtered);
@@ -36,32 +49,40 @@ const AccountStatement = () => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', options).toUpperCase();
   };
-  
 
-  const getTransactionType = (indicator) => {
-    return indicator === 'CREDIT' ? 'income' : 'expense';
+  const getTransactionType = (transaction) => {
+    if (transaction.sender_email === user.email) return 'expense';
+    if (transaction.recipient_email === user.email) return 'income';
+    return 'other';
   };
 
-  const renderTransaction = ({ item }) => (
-    <View style={styles.transactionItem}>
-      <View style={styles.transactionIcon}>
-        <Icon
-          name={getTransactionType(item.creditDebitIndicator) === 'income' ? 'arrow-down' : 'arrow-up'}
-          size={24}
-          color={getTransactionType(item.creditDebitIndicator) === 'income' ? 'green' : 'red'}
-        />
-        <Text style={styles.transactionDate}>{formatDate(item.bookingDateTime)}</Text>
+  const renderTransaction = ({ item }) => {
+    const transactionType = getTransactionType(item);
+
+
+    return (
+      <View style={styles.transactionItem}>
+        <View style={styles.transactionIcon}>
+          <Icon
+            name={transactionType === 'income' ? 'arrow-down' : 'arrow-up'}
+            size={24}
+            color={transactionType === 'income' ? 'green' : 'red'}
+          />
+          <Text style={styles.transactionDate}>{formatDate(item.date)}</Text>
+        </View>
+        <View style={styles.transactionDetails}>
+          <Text style={styles.transactionDescription}>
+          {item.sender} -> {item.recipient}
+          </Text>
+          <Text style={styles.transactionAmount}>₸{item.amount}</Text>
+        </View>
       </View>
-      <View style={styles.transactionDetails}>
-        <Text style={styles.transactionDescription}>{item.debtorAgent.name}</Text>
-        <Text style={styles.transactionAmount}>₸{item.amount.amount}</Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   const groupTransactionsByDate = (transactions) => {
     return transactions.reduce((acc, transaction) => {
-      const date = formatDate(transaction.bookingDateTime);
+      const date = formatDate(transaction.date);
       if (!acc[date]) {
         acc[date] = [];
       }
@@ -92,11 +113,12 @@ const AccountStatement = () => {
       </View>
       <SectionList
         sections={sections}
-        keyExtractor={(item) => item.transactionId}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderTransaction}
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadTransactions} />}
       />
       <FilterModal
         visible={showFilterModal}

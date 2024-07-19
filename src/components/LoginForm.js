@@ -32,6 +32,8 @@ const LoginForm = ({ navigation, setIsAuthenticated, setCurrentUser }) => {
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
@@ -39,9 +41,14 @@ const LoginForm = ({ navigation, setIsAuthenticated, setCurrentUser }) => {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          autoCapitalize="none"
         />
-        <Button title="Login" onPress={handleLogin} />
-        <Button title="Register" onPress={() => navigation.navigate('Register')} />
+        <View style={styles.buttonContainer}>
+          <Button title="Login" onPress={handleLogin} color="#4CAF50" />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button title="Register" onPress={() => navigation.navigate('Register')} color="#2196F3" />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -52,18 +59,33 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 28,
+    marginBottom: 20,
     textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#333',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: '#ddd',
     borderWidth: 1,
-    marginBottom: 12,
-    padding: 10,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    borderRadius: 25,
+    overflow: 'hidden',
   },
 });
 
