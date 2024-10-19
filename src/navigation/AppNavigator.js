@@ -71,7 +71,9 @@ const AppNavigator = () => {
         {props => <AccountStatement {...props} user={currentUser} />}
       </Tab.Screen>
       <Tab.Screen name="Balances" component={AccountBalance} options={{ tabBarLabel: 'Аналитика' }} />
-      <Tab.Screen name="Goals" component={SavingsGoal} options={{ tabBarLabel: 'Цель' }} />
+      <Tab.Screen name="Goals">
+        {props => <SavingsGoal {...props} user={currentUser} />}
+      </Tab.Screen> 
       <Tab.Screen name="Transfer" options={{ tabBarLabel: 'Перевод' }}>
         {props => <TransferForm {...props} currentUser={currentUser} />}
       </Tab.Screen>

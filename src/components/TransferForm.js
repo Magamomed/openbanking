@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Modal, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { transferFunds } from './api';
-import { Picker } from '@react-native-picker/picker';
 
 const TransferForm = ({ currentUser }) => {
   const [senderAccountId, setSenderAccountId] = useState('');
-  const [recipientEmail, setRecipientEmail] = useState('');
+  const [recipientPhoneNumber, setRecipientPhoneNumber] = useState('');
   const [recipientAccountId, setRecipientAccountId] = useState('');
   const [amount, setAmount] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -13,12 +12,13 @@ const TransferForm = ({ currentUser }) => {
   const handleTransfer = async () => {
     try {
       const transferData = {
-        sender_email: currentUser.email,
+        sender_phone: currentUser.phone_number,
         sender_account_id: senderAccountId,
-        recipient_email: recipientEmail,
+        recipient_phone: recipientPhoneNumber,
         recipient_account_id: recipientAccountId,
         amount: parseFloat(amount),
       };
+      console.log('Transfer data:', transferData);
 
       const response = await transferFunds(transferData);
       console.log('Transfer successful:', response);
@@ -74,11 +74,12 @@ const TransferForm = ({ currentUser }) => {
 
       <TextInput
         style={styles.input}
-        placeholder="Email получателя"
-        value={recipientEmail}
-        onChangeText={setRecipientEmail}
+        placeholder="Номер телефона получателя"
+        value={recipientPhoneNumber}
+        onChangeText={setRecipientPhoneNumber}
+        keyboardType="phone-pad"
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="ID аккаунта получателя"

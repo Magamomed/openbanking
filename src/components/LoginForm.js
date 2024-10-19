@@ -3,19 +3,19 @@ import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableWithoutFeedb
 import { loginUser } from './api';
 
 const LoginForm = ({ navigation, setIsAuthenticated, setCurrentUser }) => {
-  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      const user = await loginUser(email, password);
+      const user = await loginUser(phoneNumber, password);
       if (user) {
         Alert.alert('Вход успешен', `Добро пожаловать, ${user.name}!`);
         setIsAuthenticated(true);
         setCurrentUser(user);
         navigation.replace('MainTabs', { user });
       } else {
-        Alert.alert('Ошибка входа', 'Неверный email или пароль.');
+        Alert.alert('Ошибка входа', 'Неверный номер телефона или пароль.');
       }
     } catch (error) {
       console.error('Error logging in:', error);
@@ -26,28 +26,28 @@ const LoginForm = ({ navigation, setIsAuthenticated, setCurrentUser }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>Вход</Text>
         <TextInput
           style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
+          placeholder="Номер телефона"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
           autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder="Пароль"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           autoCapitalize="none"
         />
         <View style={styles.buttonContainer}>
-          <Button title="Login" onPress={handleLogin} color="#4CAF50" />
+          <Button title="Войти" onPress={handleLogin} color="#4CAF50" />
         </View>
         <View style={styles.buttonContainer}>
-          <Button title="Register" onPress={() => navigation.navigate('Register')} color="#2196F3" />
+          <Button title="Зарегистрироваться" onPress={() => navigation.navigate('Register')} color="#2196F3" />
         </View>
       </View>
     </TouchableWithoutFeedback>

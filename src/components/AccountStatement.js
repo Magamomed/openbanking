@@ -51,15 +51,15 @@ const AccountStatement = ({ user }) => {
   };
 
   const getTransactionType = (transaction) => {
-    if (transaction.sender_email === user.email) return 'expense';
-    if (transaction.recipient_email === user.email) return 'income';
+    if (transaction.sender_phone_number === user.phone_number) return 'expense';
+    if (transaction.recipient_phone_number === user.phone_number) return 'income';
     return 'other';
   };
+  
 
   const renderTransaction = ({ item }) => {
     const transactionType = getTransactionType(item);
-
-
+  
     return (
       <View style={styles.transactionItem}>
         <View style={styles.transactionIcon}>
@@ -72,13 +72,14 @@ const AccountStatement = ({ user }) => {
         </View>
         <View style={styles.transactionDetails}>
           <Text style={styles.transactionDescription}>
-          {item.sender} -> {item.recipient}
+            {item.sender_phone} -> {item.recipient_phone}
           </Text>
           <Text style={styles.transactionAmount}>₸{item.amount}</Text>
         </View>
       </View>
     );
   };
+  
 
   const groupTransactionsByDate = (transactions) => {
     return transactions.reduce((acc, transaction) => {

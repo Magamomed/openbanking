@@ -5,7 +5,7 @@ import { registerUser } from './api';
 
 const RegisterForm = ({ navigation }) => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -16,7 +16,7 @@ const RegisterForm = ({ navigation }) => {
     }
 
     const newUser = {
-      email,
+      phone_number: phoneNumber,
       name,
       password,
       accounts: [
@@ -63,24 +63,24 @@ const RegisterForm = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text style={styles.title}>Register</Text>
+        <Text style={styles.title}>Регистрация</Text>
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder="Имя"
           value={name}
           onChangeText={setName}
         />
         <TextInput
           style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
+          placeholder="Номер телефона"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
           autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder="Пароль"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -88,14 +88,14 @@ const RegisterForm = ({ navigation }) => {
         />
         <TextInput
           style={styles.input}
-          placeholder="Confirm Password"
+          placeholder="Подтвердите пароль"
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
           autoCapitalize="none"
         />
         <View style={styles.buttonContainer}>
-          <Button title="Register" onPress={handleRegister} color="#4CAF50" />
+          <Button title="Зарегистрироваться" onPress={handleRegister} color="#4CAF50" />
         </View>
       </View>
     </TouchableWithoutFeedback>

@@ -1,149 +1,158 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Button,
-  Alert,
-  TouchableOpacity,
-  Modal,
-  FlatList
-} from 'react-native';
+// ... другие импорты
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, SectionList, TouchableOpacity, RefreshControl, Modal, TextInput, Button, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getSavingsGoal, addToSavingsGoal, createSavingsGoal, getAccounts } from './api';
 
-const SavingsGoal = () => {
-  const [savingsGoals, setSavingsGoals] = useState([
-    { id: '1', name: 'Отпуск', target: 10000, saved: 5000 },
-    { id: '2', name: 'Машина', target: 20000, saved: 8000 },
-    { id: '3', name: 'Фонд', target: 15000, saved: 15000 },
-  ]);
-
+const SavingsGoal = ({ user }) => {
+  const [savingsGoals, setSavingsGoals] = useState([]);
+  const [filteredGoals, setFilteredGoals] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [newGoalName, setNewGoalName] = useState('');
   const [newGoalTarget, setNewGoalTarget] = useState('');
-  const [newGoalSaved, setNewGoalSaved] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editGoalId, setEditGoalId] = useState(null);
   const [additionalAmount, setAdditionalAmount] = useState('');
+  const [editGoalId, setEditGoalId] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState(null); // Инициализация как null
+  const [showAccountModal, setShowAccountModal] = useState(false);
 
-  const addGoal = () => {
-    if (!newGoalName || !newGoalTarget || !newGoalSaved) {
+  const loadSavingsGoals = async () => {
+    try {
+      setRefreshing(true);
+      const data = await getSavingsGoal(user.id);
+      setSavingsGoals(data);
+      setFilteredGoals(data);
+      setRefreshing(false);
+    } catch (error) {
+      console.error('Ошибка загрузки целей накопления:', error);
+      setRefreshing(false);
+    }
+  };
+
+  const loadAccounts = async () => {
+    try {
+      const accountData = await getAccounts(user.id);
+      console.log('Данные аккаунтов:', accountData); // отладка
+      setAccounts(accountData);
+    } catch (error) {
+      console.error('Ошибка загрузки аккаунтов:', error);
+    }
+  };
+  
+
+  useEffect(() => {
+    loadSavingsGoals();
+    loadAccounts(); 
+  }, [user]);
+
+  const addGoal = async () => {
+    if (!newGoalName || !newGoalTarget) {
       Alert.alert('Ошибка', 'Пожалуйста, заполните все поля');
       return;
     }
 
-    const newGoal = {
-      id: (savingsGoals.length + 1).toString(),
-      name: newGoalName,
-      target: parseFloat(newGoalTarget),
-      saved: parseFloat(newGoalSaved),
-    };
+    try {
+      const goalData = {
+        user_id: user.id,
+        name: newGoalName,
+        target: parseFloat(newGoalTarget),
+        saved: 0,
+      };
 
-    setSavingsGoals([...savingsGoals, newGoal]);
-    setNewGoalName('');
-    setNewGoalTarget('');
-    setNewGoalSaved('');
-    setModalVisible(false); // Закрыть модальное окно после добавления цели
+      const response = await createSavingsGoal(goalData);
+      loadSavingsGoals();
+      setShowModal(false);
+      setNewGoalName('');
+      setNewGoalTarget('');
+      Alert.alert('Успех', 'Цель накопления создана успешно');
+    } catch (error) {
+      console.error('Ошибка создания новой цели:', error);
+      Alert.alert('Ошибка', 'Ошибка создания цели накопления. Пожалуйста, попробуйте снова.');
+    }
   };
 
-  const updateGoal = () => {
-    if (!additionalAmount) {
-      Alert.alert('Ошибка', 'Пожалуйста, введите сумму');
+  const updateGoal = async () => {
+    if (!additionalAmount || !editGoalId || !selectedAccount) {
+      Alert.alert('Ошибка', 'Пожалуйста, выберите аккаунт и введите сумму');
       return;
     }
 
-    const updatedGoals = savingsGoals.map(goal => {
-      if (goal.id === editGoalId) {
-        const newSaved = goal.saved + parseFloat(additionalAmount);
-        return {
-          ...goal,
-          saved: newSaved > goal.target ? goal.target : newSaved
-        };
-      }
-      return goal;
-    });
-
-    setSavingsGoals(updatedGoals);
-    setEditGoalId(null);
-    setAdditionalAmount('');
-  };
-
-  const markAsCompleted = (goalId) => {
-    const updatedGoals = savingsGoals.map(goal => {
-      if (goal.id === goalId) {
-        return {
-          ...goal,
-          saved: goal.target
-        };
-      }
-      return goal;
-    });
-
-    setSavingsGoals(updatedGoals);
-  };
-
-  const getProgressBarColor = (percentage) => {
-    if (percentage <= 20) {
-      return '#d32f2f'; // красный
-    } else if (percentage <= 40) {
-      return '#fbc02d'; // желтый
-    } else {
-      return '#388e3c'; // зеленый
+    try {
+      await addToSavingsGoal(editGoalId, parseFloat(additionalAmount), selectedAccount.id);
+      loadSavingsGoals();
+      setEditGoalId(null);
+      setSelectedAccount(null);
+    } catch (error) {
+      console.error('Ошибка добавления средств:', error);
     }
   };
 
   const renderGoal = ({ item }) => {
     const percentage = (item.saved / item.target) * 100;
     return (
-      <View style={styles.goalContainer}>
-        <View style={styles.goalHeader}>
+      <View style={styles.goalItem}>
+        <View style={styles.goalIcon}>
+          <Icon name="piggy-bank" size={24} color="#00796b" />
+        </View>
+        <View style={styles.goalDetails}>
           <Text style={styles.goalName}>{item.name}</Text>
-          <TouchableOpacity onPress={() => setEditGoalId(item.id)}>
-            <Icon name="pencil" size={24} color="#000" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.progressBarContainer}>
-          <View style={{ ...styles.progressBar, width: `${percentage}%`, backgroundColor: getProgressBarColor(percentage) }} />
-        </View>
-        <Text style={styles.goalProgress}>
-          {item.saved} / {item.target} ({Math.round(percentage)}%)
-        </Text>
-        {percentage === 100 && (
-          <View style={styles.completedContainer}>
-            <Icon name="check-circle" size={24} color="#388e3c" />
-            <Text style={styles.completedText}>Выполнено</Text>
+          <Text style={styles.goalAmount}>₸{item.saved} / {item.target}</Text>
+          <View style={styles.progressBarContainer}>
+            <View style={{ ...styles.progressBar, width: `${percentage}%` }} />
           </View>
-        )}
+        </View>
+        <TouchableOpacity onPress={() => setEditGoalId(item.id)}>
+          <Icon name="pencil" size={24} color="#000" />
+        </TouchableOpacity>
       </View>
     );
   };
 
+  console.log('Текущий selectedAccount:', selectedAccount);
+
+
+  const renderAccount = ({ item }) => (
+    <TouchableOpacity onPress={() => {
+      console.log('Выбранный аккаунт:', item); // Добавьте вывод в консоль для отладки
+      setSelectedAccount(item);
+      setShowAccountModal(false);
+    }}>
+      <Text style={styles.accountItem}>{item.bank_name}</Text>
+    </TouchableOpacity>
+  );
+  
+
+  const sections = [
+    { title: 'Текущие цели', data: filteredGoals }
+  ];
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Персональные цели</Text>
-      <FlatList
-        data={savingsGoals}
-        renderItem={renderGoal}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.goalList}
-      />
-      <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
-        <Text style={styles.addButtonText}>Добавить цель</Text>
-      </TouchableOpacity>
+      <View style={styles.headerContainer}>
+        <Text style={styles.title}>Цели накопления</Text>
+        <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
+          <Text style={styles.addButtonText}>Добавить цель</Text>
+        </TouchableOpacity>
+      </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderGoal}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.sectionHeader}>{title}</Text>
+        )}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadSavingsGoals} />}
+      />
+
+      <Modal visible={showModal} transparent={true} animationType="slide" onRequestClose={() => setShowModal(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Новая Цель</Text>
+            <Text style={styles.modalTitle}>Новая цель накопления</Text>
             <TextInput
               style={styles.input}
               placeholder="Название цели"
-              placeholderTextColor="#000"
               value={newGoalName}
               onChangeText={setNewGoalName}
             />
@@ -151,48 +160,49 @@ const SavingsGoal = () => {
               style={styles.input}
               placeholder="Целевая сумма"
               keyboardType="numeric"
-              placeholderTextColor="#000"
               value={newGoalTarget}
               onChangeText={setNewGoalTarget}
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Накоплено"
-              keyboardType="numeric"
-              placeholderTextColor="#000"
-              value={newGoalSaved}
-              onChangeText={setNewGoalSaved}
-            />
             <Button title="Добавить цель" onPress={addGoal} />
-            <Button title="Отмена" onPress={() => setModalVisible(false)} />
+            <Button title="Отмена" onPress={() => setShowModal(false)} />
           </View>
         </View>
       </Modal>
 
       {editGoalId && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={!!editGoalId}
-          onRequestClose={() => setEditGoalId(null)}
-        >
+        <Modal visible={!!editGoalId} transparent={true} animationType="slide" onRequestClose={() => setEditGoalId(null)}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Добавить сумму</Text>
+              <Text style={styles.modalTitle}>Добавить сумму к цели</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Сумма"
                 keyboardType="numeric"
-                placeholderTextColor="#000"
                 value={additionalAmount}
                 onChangeText={setAdditionalAmount}
               />
-              <Button title="Обновить цель" onPress={updateGoal} />
+              <TouchableOpacity onPress={() => setShowAccountModal(true)}>
+              <Text style={styles.selectedAccount}>
+  {selectedAccount ? selectedAccount.bank_name : 'Выберите аккаунт'}
+</Text>
+
+              </TouchableOpacity>
+              <Button title="Добавить" onPress={updateGoal} />
               <Button title="Отмена" onPress={() => setEditGoalId(null)} />
             </View>
           </View>
         </Modal>
       )}
+
+      <Modal visible={showAccountModal} transparent={true} animationType="slide" onRequestClose={() => setShowAccountModal(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Выберите аккаунт</Text>
+            {accounts.map(renderAccount)}
+            <Button title="Закрыть" onPress={() => setShowAccountModal(false)} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -200,76 +210,64 @@ const SavingsGoal = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
     padding: 20,
+    backgroundColor: '#f9f9f9',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#00796b',
-    textAlign: 'center',
-    marginVertical: 20,
   },
-  goalList: {
-    paddingBottom: 20,
+  addButton: {
+    backgroundColor: '#00796b',
+    padding: 10,
+    borderRadius: 5,
   },
-  goalContainer: {
+  addButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  sectionHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  goalItem: {
+    flexDirection: 'row',
+    padding: 15,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-  goalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 10,
+    alignItems: 'center',
+  },
+  goalIcon: {
+    marginRight: 15,
+  },
+  goalDetails: {
+    flex: 1,
   },
   goalName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+  },
+  goalAmount: {
+    fontSize: 16,
+    color: '#666',
   },
   progressBarContainer: {
     backgroundColor: '#e0e0e0',
     borderRadius: 5,
     height: 10,
     overflow: 'hidden',
-    marginBottom: 10,
+    marginTop: 5,
   },
   progressBar: {
     height: '100%',
-  },
-  goalProgress: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-  completedContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  completedText: {
-    fontSize: 16,
-    color: '#388e3c',
-    marginLeft: 5,
-  },
-  addButton: {
-    backgroundColor: '#00796b',
-    borderRadius: 10,
-    padding: 15,
-    alignItems: 'center',
-  },
-  addButtonText: {
-    fontSize: 18,
-    color: '#fff',
-    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
@@ -295,6 +293,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  accountItem: {
+    padding: 10,
+    fontSize: 16,
+    color: '#00796b',
+  },
+  selectedAccount: {
+    padding: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    width: '100%',
     textAlign: 'center',
   },
 });
